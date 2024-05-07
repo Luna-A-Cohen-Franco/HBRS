@@ -33,38 +33,6 @@ public class HACommand_EndpointSetup_HPA4133
 	}
 }
 
-// TODO: UDPResponseCodes
-public enum UDPResponseCodes
-{
-	None,
-	Join_EnumerateResponse,
-	Join_ScanResponseStarted,
-	Join_SwitchCloudResponse,
-	Join_JoinResponse
-}
-
-// TODO: UpdateStatusInfo
-public class UpdateStatusInfo
-{
-	public bool IsACK { get; set; }
-
-	public long EndpointID { get; set; }
-
-	public string LocalIPAddress { get; set; }
-
-	public List<EndpointValue> EndpointValues { get; set; }
-}
-
-// TODO: DeviceIPInformation
-public class DeviceIPInformation
-{
-   public long DeviceID { get; set; }
-
-   public string DeviceMac { get; set; }
-
-   public string LocalIPAddress { get; set; }
-}
-
 // TODO: HACommand
 public class HACommand
 {

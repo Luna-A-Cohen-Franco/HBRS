@@ -3,6 +3,7 @@ pub enum HbrsError {
     DataLengthExceedsLimit,
     BadMacAddressLength,
     BadMacAddressValues,
+    BadIpv4AddressLength,
 }
 
 /*
@@ -15,6 +16,7 @@ impl HbrsError {
             HbrsError::DataLengthExceedsLimit => "Data length exceeds string size".to_string(),
             HbrsError::BadMacAddressLength => "Invalid MAC address size".to_string(),
             HbrsError::BadMacAddressValues => "Invalid MAC address values".to_string(),
+            HbrsError::BadIpv4AddressLength => "Invalid IPv4 address size".to_string(),
         }
     }
 }
