@@ -55,18 +55,6 @@ public class UpdateStatusInfo
 	public List<EndpointValue> EndpointValues { get; set; }
 }
 
-// TODO: EndpointIPInformation
-public class EndpointIPInformation
-{
-   public long DeviceID { get; set; }
-
-   public long EndpointID { get; set; }
-
-   public string DeviceMac { get; set; }
-
-   public string EndpointAddress { get; set; }
-}
-
 // TODO: DeviceIPInformation
 public class DeviceIPInformation
 {
@@ -643,7 +631,6 @@ public class HACommand_SetMode
 		return new byte[5] { Mode, FanMode, Flags, DesiredTemp_b0, DesiredTemp_b1 };
 	}
 }
-
 // TODO: HACommand_HVACCommand
 public class HACommand_HVACCommand
 {
@@ -655,124 +642,7 @@ public class HACommand_HVACCommand
 	}
 }
 
-// TODO: EndpointValueType
-public enum EndpointValueType
-{
-	Unknown,
-	IsOn,
-	Dim,
-	DimRate,
-	AutoOff,
-	OffTimeout,
-	Position,
-	LightLevel,
-	AppliancePower,
-	MeteringType,
-	MeteringUnit,
-	MeteringUnitsPerPulse,
-	MeterEndpoint,
-	MeasuredTemperatureC,
-	ThermostatMode,
-	ThermostatFanMode,
-	HVACTimerOnMinutes,
-	HVACTimerOffMinutes,
-	HVACFlags,
-	Reserved4,
-	ThermostatDesiredTempC,
-	DigitalPortValue,
-	DigitalPortInputCount,
-	AnalogRawValue,
-	AnalogValue,
-	AnalogRawMin,
-	AnalogRawMax,
-	AnalogRealMin,
-	AnalogRealMax,
-	DataSourceEndpoint,
-	VTMarginC,
-	VTOffMacro,
-	VTHeatMacroAbove,
-	VTHeatMacroBelow,
-	VTCoolMacroAbove,
-	VTCoolMacroBelow,
-	VTFanMacroLow,
-	VTFanMacroMid,
-	VTFanMacroHi,
-	VTFanMacroAuto,
-	TemperatureOffset,
-	DimmerDisabled,
-	DoorLockState,
-	HumidityPercentage,
-	MeteringMultiplier,
-	MeteringSumation,
-	IASSensorState,
-	AlarmPartitionNumber,
-	AlarmPartitionState,
-	Reserved10,
-	Reserved0,
-	Reserved1,
-	Reserved2,
-	Reserved3,
-	Reserved5,
-	Reserved6,
-	Reserved7,
-	Reserved8,
-	Reserved9,
-	ValuePair1,
-	ValuePair2,
-	ValuePair3,
-	ValuePair4,
-	ValuePair5,
-	ValuePair6,
-	ValuePair7,
-	ValuePair8,
-	ValuePair9,
-	ValuePair10,
-	ValuePair11,
-	ValuePair12,
-	ValuePair13,
-	ValuePair14,
-	ValuePair15,
-	ValuePair16,
-	ValuePair17,
-	ValuePair18,
-	ValuePair19,
-	ValuePair20
-}
 
-// TODO: EndpointValue
-public class EndpointValue
-{
-	public EndpointValueType ValueType;
-
-	public string Value;
-
-	public EndpointValue(EndpointValueType ValueType, string Value)
-	{
-		this.ValueType = ValueType;
-		this.Value = Value;
-	}
-
-	public EndpointValue()
-	{
-	}
-}
-// TODO: EndpointValues
-public class EndpointValues
-{
-	public long EndpointID;
-
-	public List<EndpointValue> Values;
-
-	public EndpointValues(long EndpointID, List<EndpointValue> Values)
-	{
-		this.EndpointID = EndpointID;
-		this.Values = Values;
-	}
-
-	public EndpointValues()
-	{
-	}
-}
 // TODO: HACommand_StatusLight
 public class HACommand_StatusLight
 {
@@ -1012,19 +882,7 @@ public class HACommand_Status
 		}
 	}
 }
-// TODO: HACommand_Status_Constants
-public static class HACommand_Status_Constants
-{
-	public const byte Status_Light = 1;
 
-	public const byte Status_Curtain = 4;
-
-	public const byte Status_HVAC = 6;
-
-	public const byte Status_IAS = 8;
-
-	public const byte Status_Doorlock = 7;
-}
 
 // TODO: FloatHelper
 public static class FloatHelper
@@ -1066,6 +924,7 @@ public static class FloatHelper
 		return text + " °C";
 	}
 }
+
 // TODO: Main
 class MainClass
 {

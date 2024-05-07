@@ -1,1 +1,1 @@
-pub mod bytearrayshelper;
+pub mod byte_arrays_helper;
