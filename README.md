@@ -1,3 +1,3 @@
 # HBRS
 
-HBRS (myHabeetat Backend Replacement Solucion)
+HBRS (myHabeetat Backend Replacement Solution)
