@@ -16,23 +16,6 @@ using System.Threading.Tasks;
 using System.Globalization;
 using System.Text;
 
-// TODO: HACommand_EndpointSetup_HPA4133
-public class HACommand_EndpointSetup_HPA4133
-{
-	public byte StartType { get; set; }
-
-	public HACommand_EndpointSetup_HPA4133()
-	{
-		StartType = 1;
-	}
-
-	public byte[] GetBytes()
-	{
-		byte[] second = new byte[8];
-		return ByteArraysHelper.Combine(StartType, second);
-	}
-}
-
 // TODO: HACommand
 public class HACommand
 {
@@ -308,61 +291,9 @@ public class HACommandHeader
 		CommandID = data[num];
 	}
 }
-// TODO: HACommand_Join_JoinRequest
-public class HACommand_Join_JoinRequest
-{
-	private byte[] SSID;
 
-	private byte SecurityType;
-
-	private byte EncryptionType;
-
-	private byte[] Key;
-
-	public HACommand_Join_JoinRequest(byte[] sSID, byte securityType, byte encryptionType, byte[] key)
-	{
-		SSID = sSID;
-		SecurityType = securityType;
-		EncryptionType = encryptionType;
-		Key = ByteArraysHelper.CopyArrayFromStringWithFill(key, 33);
-	}
-
-	public byte[] GetBytes()
-	{
-		byte[] first = ByteArraysHelper.Combine(SSID, SecurityType);
-		byte[] second = ByteArraysHelper.Combine(EncryptionType, Key);
-		return ByteArraysHelper.Combine(first, second);
-	}
-}
 // TODO: HACommand_Join_ScanResponseItem
-public class HACommand_Join_ScanResponseItem
-{
-	public string SSIDAsStr => Encoding.UTF8.GetString(SSID, 0, (SSID != null) ? SSID.Length : 0);
-
-	public byte[] SSID { get; private set; }
-
-	public byte SecurityType { get; private set; }
-
-	public byte EncryptionType { get; private set; }
-
-	public byte RSSI { get; internal set; }
-
-	public HACommand_Join_ScanResponseItem(byte[] data, int headerOffset)
-	{
-		if (SSID == null)
-		{
-			SSID = new byte[33];
-		}
-		for (int i = 0; i < 33; i++)
-		{
-			SSID[i] = 0;
-		}
-		Buffer.BlockCopy(data, headerOffset, SSID, 0, 32);
-		SecurityType = data[headerOffset + 33];
-		EncryptionType = data[headerOffset + 34];
-		RSSI = data[headerOffset + 35];
-	}
-}
+33
 // TODO:  HACommand_Join_ScanResponse
 public class HACommand_Join_ScanResponse
 {
@@ -848,48 +779,6 @@ public class HACommand_Status
 		case 5:
 			break;
 		}
-	}
-}
-
-
-// TODO: FloatHelper
-public static class FloatHelper
-{
-	public static double StringToDouble(string value)
-	{
-		return double.Parse(value, CultureInfo.InvariantCulture);
-	}
-
-	public static string DoubleToString(double value)
-	{
-		if (value == 0.0)
-		{
-			return "0";
-		}
-		string text = value.ToString("F");
-		text = text.Replace(",", ".");
-		string[] array = text.Split(new char[1] { '.' });
-		if (array != null && array.Length > 1)
-		{
-			text = array[0] + "." + array[1].Substring(0, 1);
-		}
-		return text.Replace(",", ".");
-	}
-
-	public static string FormatTemperatureToString(double value, int numberOfDecimals)
-	{
-		if (value <= -300.0)
-		{
-			return "0";// StringResources.Instance.Devices.Thermostat_UnknownTemperature;
-		}
-		string text = value.ToString("F");
-		text = text.Replace(",", ".");
-		string[] array = text.Split(new char[1] { '.' });
-		if (array != null && array.Length > 1)
-		{
-			text = ((numberOfDecimals <= 0) ? array[0] : (array[0] + "." + array[1].Substring(0, numberOfDecimals)));
-		}
-		return text + " °C";
 	}
 }
 

@@ -3,48 +3,28 @@ pub struct FloatHelper{
 }
 
 impl FloatHelper{
-    
-}
-/*
-
-public static class FloatHelper
-{
-	public static double StringToDouble(string value)
-	{
-		return double.Parse(value, CultureInfo.InvariantCulture);
+    pub fn string_to_double(value: &str) -> Result<f64, std::num::ParseFloatError>{
+		return value.parse::<f64>();
 	}
 
-	public static string DoubleToString(double value)
-	{
-		if (value == 0.0)
-		{
-			return "0";
+	pub fn double_to_string(value: f64, number_of_decimals: u8) -> String{
+		if value == 0.0{
+			return "0".to_string();
 		}
-		string text = value.ToString("F");
-		text = text.Replace(",", ".");
-		string[] array = text.Split(new char[1] { '.' });
-		if (array != null && array.Length > 1)
-		{
-			text = array[0] + "." + array[1].Substring(0, 1);
-		}
-		return text.Replace(",", ".");
+
+		let text = format!("{:.*}", number_of_decimals as usize, value);
+		let text = text.replace(",", ".");
+
+		return text;
 	}
 
-	public static string FormatTemperatureToString(double value, int numberOfDecimals)
-	{
-		if (value <= -300.0)
-		{
-			return "0";// StringResources.Instance.Devices.Thermostat_UnknownTemperature;
+	pub fn format_temperature_to_string(value: f64, number_of_decimals: u8) -> String{
+		if value <= -300.0{
+			return "0".to_string();
 		}
-		string text = value.ToString("F");
-		text = text.Replace(",", ".");
-		string[] array = text.Split(new char[1] { '.' });
-		if (array != null && array.Length > 1)
-		{
-			text = ((numberOfDecimals <= 0) ? array[0] : (array[0] + "." + array[1].Substring(0, numberOfDecimals)));
-		}
-		return text + " °C";
+
+		let text = FloatHelper::double_to_string(value, number_of_decimals);
+
+		return format!("{} °C", text);
 	}
 }
-
-*/

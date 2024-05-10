@@ -6,6 +6,7 @@ pub struct EndpointIPInformation {
     pub device_mac: MacAddress,
     pub endpoint_address: MacAddress,
 }
+
 // Still up in the air as to what type of address this is refering to 
 
 /*

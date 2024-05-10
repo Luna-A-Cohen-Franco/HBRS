@@ -6,12 +6,12 @@ pub struct MacAddress {
 }
 
 impl MacAddress {
-    pub fn new(bytes: Vec<u8>) -> Result<MacAddress, HbrsError> {
+    pub fn new(bytes: Vec<u8>) -> Result<Self, HbrsError> {
         if bytes.len() != 6 {
             return Err(HbrsError::BadMacAddressLength);
         }
 
-        return Ok(MacAddress { bytes });
+        return Ok(Self { bytes });
     }
 
     pub fn get_bytes(&self) -> &Vec<u8> {

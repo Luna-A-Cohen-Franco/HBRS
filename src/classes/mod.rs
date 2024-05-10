@@ -6,3 +6,4 @@ pub mod enums;
 pub mod ipv4;
 pub mod update_status_info;
 pub mod device_ip_information;
+pub mod ha_comm;

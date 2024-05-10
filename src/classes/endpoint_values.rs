@@ -6,8 +6,8 @@ pub struct EndpointValues{
 }
 
 impl EndpointValues{
-    pub fn new(endpoint_id: u64, values: Vec<EndpointValue>) -> EndpointValues{
-        EndpointValues{
+    pub fn new(endpoint_id: u64, values: Vec<EndpointValue>) -> Self{
+        Self{
             endpoint_id,
             values,
         }

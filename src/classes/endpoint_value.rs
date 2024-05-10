@@ -6,8 +6,8 @@ pub struct EndpointValue{
 }
 
 impl EndpointValue{
-    pub fn new(value_type: EndpointValueType, value: String) -> EndpointValue{
-        EndpointValue{
+    pub fn new(value_type: EndpointValueType, value: String) -> Self{
+        Self{
             value_type,
             value,
         }
