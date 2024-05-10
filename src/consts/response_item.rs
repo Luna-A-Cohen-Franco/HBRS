@@ -3,6 +3,8 @@ pub enum ResponseItem{
     SecurityTypePos,
     EncryptionTypePos,
     RSSIPos,
+    DataSize,
+    MinRSSI,
 }
 
 impl ResponseItem{
@@ -12,6 +14,8 @@ impl ResponseItem{
             Self::SecurityTypePos => 33,
             Self::EncryptionTypePos => 34,
             Self::RSSIPos => 35,
+            Self::DataSize => 54,
+            Self::MinRSSI => 20,
         }
     }
 }

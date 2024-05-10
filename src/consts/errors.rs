@@ -4,6 +4,8 @@ pub enum HbrsError {
     BadMacAddressLength,
     BadMacAddressValues,
     BadIpv4AddressLength,
+    InvalidScanDataLength,
+    BadSSID,
 }
 
 /*
@@ -17,6 +19,8 @@ impl HbrsError {
             HbrsError::BadMacAddressLength => "Invalid MAC address size".to_string(),
             HbrsError::BadMacAddressValues => "Invalid MAC address values".to_string(),
             HbrsError::BadIpv4AddressLength => "Invalid IPv4 address size".to_string(),
+            HbrsError::InvalidScanDataLength => "Invalid scan data length".to_string(),
+            HbrsError::BadSSID => "Bad SSID".to_string(),
         }
     }
 }

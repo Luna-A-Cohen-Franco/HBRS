@@ -1,13 +1,13 @@
 use crate::{consts::{other::OtherConsts, errors::HbrsError}, utils::byte_arrays_helper::ByteArraysHelper};
 
-pub struct ha_comm_join_join_request{
+pub struct HACommJoinJoinReq{
     pub ssid: Vec<u8>,
     pub security_type: u8,
     pub encryption_type: u8,
     pub key: Vec<u8>,
 }
 
-impl ha_comm_join_join_request{
+impl HACommJoinJoinReq{
     pub fn new(ssid: Vec<u8>, security_type: u8, encryption_type: u8, key: Vec<u8>) -> Result<Self, HbrsError>{
         let key = match ByteArraysHelper::copy_array_from_stringby_with_fill(&key, OtherConsts::KeyLength.get_value()){
             Ok(value) => value,

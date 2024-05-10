@@ -1,16 +1,20 @@
 use std::string::FromUtf8Error;
 
-use crate::consts::{other::OtherConsts::KeyLength, response_item::ResponseItem};
+use crate::consts::{errors::HbrsError, other::OtherConsts::KeyLength, response_item::ResponseItem};
 
-pub struct ha_comm_join_scan_response_item{
+pub struct HACommJoinScanResItem{
     pub ssid: Vec<u8>,
     pub security_type: u8,
     pub encryption_type: u8,
     pub rssi: u8,
 }
 
-impl ha_comm_join_scan_response_item{
-    pub fn new(data: Vec<u8>, header_offset: usize) -> Self{
+impl HACommJoinScanResItem{
+    pub fn new(data: Vec<u8>, header_offset: usize) -> Result<Self, HbrsError>{
+		if data.len() < ResponseItem::DataSize.get_value(){
+			return Err(HbrsError::InvalidScanDataLength);
+		}
+
         let mut ssid = vec![0; KeyLength.get_value()];
         
         ssid.copy_from_slice(&data[header_offset..(header_offset+32)]);
@@ -19,12 +23,12 @@ impl ha_comm_join_scan_response_item{
         let encryption_type = data[header_offset + ResponseItem::EncryptionTypePos.get_value()];
 		let rssi = data[header_offset + ResponseItem::RSSIPos.get_value()];
         
-        Self{
+        Ok(Self{
             ssid,
             security_type,
             encryption_type,
             rssi,
-        }
+        })
     }
 
     pub fn get_ssid_as_str(&self) -> Result<String, FromUtf8Error>{

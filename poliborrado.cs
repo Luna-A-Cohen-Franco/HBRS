@@ -292,43 +292,6 @@ public class HACommandHeader
 	}
 }
 
-// TODO: HACommand_Join_ScanResponseItem
-33
-// TODO:  HACommand_Join_ScanResponse
-public class HACommand_Join_ScanResponse
-{
-	public List<HACommand_Join_ScanResponseItem> ListOfWifis { get; set; }
-
-	public HACommand_Join_ScanResponse()
-	{
-		ListOfWifis = new List<HACommand_Join_ScanResponseItem>();
-	}
-
-	public void AddNewItem(byte[] data, int headerOffset)
-	{
-		if (data == null || data.Length != 54)
-		{
-			return;
-		}
-		HACommand_Join_ScanResponseItem NewItem = new HACommand_Join_ScanResponseItem(data, headerOffset);
-		if (Array.TrueForAll(NewItem.SSID, (byte val) => val == 0) || string.IsNullOrWhiteSpace(NewItem.SSIDAsStr) || NewItem.RSSI <= 20)
-		{
-			return;
-		}
-		HACommand_Join_ScanResponseItem hACommand_Join_ScanResponseItem = ListOfWifis.Find((HACommand_Join_ScanResponseItem i) => i.SSIDAsStr.ToLower() == NewItem.SSIDAsStr.ToLower());
-		if (hACommand_Join_ScanResponseItem != null)
-		{
-			if (NewItem.RSSI > hACommand_Join_ScanResponseItem.RSSI)
-			{
-				hACommand_Join_ScanResponseItem.RSSI = NewItem.RSSI;
-			}
-		}
-		else
-		{
-			ListOfWifis.Add(NewItem);
-		}
-	}
-}
 // TODO: HACommand_Join_EnumResponse
 public class HACommand_Join_EnumResponse
 {
@@ -490,57 +453,6 @@ public class HACommand_SetAutoOff
 		return ByteArraysHelper.Combine(b, b2);
 	}
 }
-// TODO: HACommand_CustomCommand
-public class HACommand_CustomCommand
-{
-	public byte Command { get; set; }
-
-	public byte[] Data { get; set; }
-
-	public void SetBytes(byte[] data, int headerOffset)
-	{
-		Command = data[headerOffset];
-		Data = null;
-	}
-
-	public byte[] GetBytes()
-	{
-		if (Data == null || Data.Length == 0)
-		{
-			return new byte[1] { Command };
-		}
-		return ByteArraysHelper.Combine(Command, Data);
-	}
-}
-// TODO:  HACommand_SetMode
-public class HACommand_SetMode
-{
-	public byte Mode { get; set; }
-
-	public byte FanMode { get; set; }
-
-	public byte Flags { get; set; }
-
-	public byte DesiredTemp_b0 { get; set; }
-
-	public byte DesiredTemp_b1 { get; set; }
-
-	public byte[] GetBytes()
-	{
-		return new byte[5] { Mode, FanMode, Flags, DesiredTemp_b0, DesiredTemp_b1 };
-	}
-}
-// TODO: HACommand_HVACCommand
-public class HACommand_HVACCommand
-{
-	public byte Command { get; set; }
-
-	public byte GetBytes()
-	{
-		return Command;
-	}
-}
-
 
 // TODO: HACommand_StatusLight
 public class HACommand_StatusLight
