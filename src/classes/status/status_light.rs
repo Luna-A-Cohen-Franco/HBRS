@@ -10,6 +10,11 @@ impl StatusLight{
             endpoint_values: Vec::new(),
         }
     }
+
+    pub fn get_endpoint_values(&self) -> Vec<EndpointValue>{
+        return self.endpoint_values.iter().cloned().collect();
+    }
+
     pub fn set_bytes(&mut self, data: &[u8], header_offset: usize){
         let num = data[header_offset];
         let b = data[header_offset + 1];

@@ -1,5 +1,6 @@
 use crate::classes::enums::endpoint_value_type::EndpointValueType;
 
+#[derive(Clone)]
 pub struct EndpointValue{
     value_type: EndpointValueType,
     value: String,

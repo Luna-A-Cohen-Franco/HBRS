@@ -93,4 +93,19 @@ impl Header{
 
         return Ok(true);
     }
+
+    pub fn clear_bytes(&mut self){
+        self.protocol_version = 0;
+        self.source_mac = MacAddress::new_empty();
+        self.destination_mac = MacAddress::new_empty();
+        self.sequence_number = 0;
+        self.source_endpoint = 0;
+        self.destination_endpoint = 0;
+        self.command_id = 0;
+        self.mac_of_last_response = MacAddress::new_empty();
+    }
+
+    pub fn get_id(&self) -> u8{
+        return self.command_id;
+    }
 }

@@ -11,6 +11,10 @@ impl StatusHVAC{
         }
     }
 
+    pub fn get_endpoint_values(&self) -> Vec<EndpointValue>{
+        return self.endpoint_values.iter().cloned().collect();
+    }
+
     pub fn set_bytes(&mut self, data: &[u8], header_offset: usize){
         let b = data[header_offset];
         let b2 = data[header_offset + 1];

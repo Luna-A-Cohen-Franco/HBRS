@@ -17,7 +17,7 @@ impl SetMode{
         }
     }
 
-    pub fn get_bytes(&self) -> [u8; 5]{
-        return [self.mode, self.fan_mode, self.flags, self.desired_temp_b0, self.desired_temp_b1];
+    pub fn get_bytes(&self) -> Vec<u8>{
+        return vec![self.mode, self.fan_mode, self.flags, self.desired_temp_b0, self.desired_temp_b1];
     }
 }

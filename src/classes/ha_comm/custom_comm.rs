@@ -18,7 +18,7 @@ impl CustomComm{
         self.data = Vec::new();
     }
 
-    pub fn get_byte(&self) -> Vec<u8>{
+    pub fn get_bytes(&self) -> Vec<u8>{
         if self.data.len() == 0{
             return vec![self.command]
         }
