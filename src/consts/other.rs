@@ -1,11 +1,13 @@
-pub enum OtherConsts{
-    KeyLength
+pub enum Other{
+    KeyLength,
+    HeaderOffset,
 }
 
-impl OtherConsts{
+impl Other{
     pub fn get_value(&self) -> usize{
         match self{
-            OtherConsts::KeyLength => 33,
+            Self::KeyLength => 33,
+            Self::HeaderOffset => 17,
         }
     }
 }

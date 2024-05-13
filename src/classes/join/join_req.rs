@@ -1,15 +1,15 @@
-use crate::{consts::{other::OtherConsts, errors::HbrsError}, utils::byte_arrays_helper::ByteArraysHelper};
+use crate::{consts::{other::Other, errors::HbrsError}, utils::byte_arrays_helper::ByteArraysHelper};
 
-pub struct HACommJoinJoinReq{
+pub struct JoinReq{
     pub ssid: Vec<u8>,
     pub security_type: u8,
     pub encryption_type: u8,
     pub key: Vec<u8>,
 }
 
-impl HACommJoinJoinReq{
+impl JoinReq{
     pub fn new(ssid: Vec<u8>, security_type: u8, encryption_type: u8, key: Vec<u8>) -> Result<Self, HbrsError>{
-        let key = match ByteArraysHelper::copy_array_from_stringby_with_fill(&key, OtherConsts::KeyLength.get_value()){
+        let key = match ByteArraysHelper::cp_arr_bytes_fill(&key, Other::KeyLength.get_value()){
             Ok(value) => value,
             Err(err) => return Err(err),
         };

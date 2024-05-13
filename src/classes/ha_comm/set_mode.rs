@@ -1,4 +1,4 @@
-pub struct HACommSetMode{
+pub struct SetMode{
     pub mode: u8,
     pub fan_mode: u8,
     pub flags: u8,
@@ -6,7 +6,7 @@ pub struct HACommSetMode{
     pub desired_temp_b1: u8,
 }
 
-impl HACommSetMode{
+impl SetMode{
     pub fn new() -> Self{
         Self{
             mode: 0,

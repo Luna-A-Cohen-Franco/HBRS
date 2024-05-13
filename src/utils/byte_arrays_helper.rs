@@ -4,7 +4,7 @@ pub struct ByteArraysHelper;
 
 impl ByteArraysHelper {
     // Returns the string in the form a vector of bytes restricted to a certain length
-    pub fn copy_array_from_string_with_fill(data: String, strict_length: usize) -> Result<Vec<u8>, HbrsError>
+    pub fn cp_arr_string_fill(data: String, strict_length: usize) -> Result<Vec<u8>, HbrsError>
     {
         let data2: Vec<u8> = if data.is_empty(){
             Vec::new()
@@ -12,10 +12,10 @@ impl ByteArraysHelper {
             data.as_bytes().to_vec()
         };
 
-       return Self::copy_array_from_stringby_with_fill(&data2, strict_length);
+       return Self::cp_arr_bytes_fill(&data2, strict_length);
     }
 
-    pub fn copy_array_from_stringby_with_fill(data: &Vec<u8>, strict_length: usize) -> Result<Vec<u8>, HbrsError>
+    pub fn cp_arr_bytes_fill(data: &Vec<u8>, strict_length: usize) -> Result<Vec<u8>, HbrsError>
     {
         let mut vector_by: Vec<u8> = vec![0; strict_length];
 

@@ -1,6 +1,6 @@
 use crate::consts::errors::HbrsError;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct MacAddress {
     bytes: Vec<u8>,
 }
@@ -12,6 +12,9 @@ impl MacAddress {
         }
 
         return Ok(Self { bytes });
+    }
+    pub fn new_empty() -> Self {
+        return Self { bytes: Vec::new() };
     }
 
     pub fn get_bytes(&self) -> &Vec<u8> {

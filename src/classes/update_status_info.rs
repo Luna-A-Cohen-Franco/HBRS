@@ -1,5 +1,4 @@
-
-use super::{endpoint_value::EndpointValue, ipv4::IPv4Addr};
+use super::{addresses::ipv4::IPv4Addr, endpoint::endpoint_value::EndpointValue};
 
 pub struct UpdateStatusInfo {
     pub is_ack: bool,

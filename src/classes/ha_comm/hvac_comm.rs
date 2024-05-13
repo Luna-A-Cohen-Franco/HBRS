@@ -1,8 +1,8 @@
-pub struct HACommHVACComm{
+pub struct HVACComm{
     comm: u8,
 }
 
-impl HACommHVACComm{
+impl HVACComm{
     pub fn new() -> Self{
         Self{
             comm: 0,

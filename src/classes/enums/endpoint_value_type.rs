@@ -1,3 +1,4 @@
+#[derive(Clone, PartialEq)]
 pub enum EndpointValueType
 {
 	Unknown,

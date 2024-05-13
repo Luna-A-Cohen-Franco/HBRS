@@ -1,4 +1,4 @@
-use super::mac_address::MacAddress;
+use crate::classes::addresses::mac_address::MacAddress;
 
 pub struct EndpointIPInformation {
     pub device_id: u64,

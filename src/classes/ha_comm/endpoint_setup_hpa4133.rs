@@ -1,11 +1,11 @@
 use crate::utils::byte_arrays_helper::ByteArraysHelper;
 
 
-pub struct HACommEndpointSetupHPA4133{
+pub struct EndpointSetupHPA4133{
     pub start_type: u8,
 }
 
-impl HACommEndpointSetupHPA4133{
+impl EndpointSetupHPA4133{
     pub fn new() -> Self{
         Self{
             start_type: 1,

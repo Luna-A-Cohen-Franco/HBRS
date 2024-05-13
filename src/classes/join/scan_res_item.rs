@@ -1,15 +1,15 @@
 use std::string::FromUtf8Error;
 
-use crate::consts::{errors::HbrsError, other::OtherConsts::KeyLength, response_item::ResponseItem};
+use crate::consts::{errors::HbrsError, other::Other::KeyLength, response_item::ResponseItem};
 
-pub struct HACommJoinScanResItem{
+pub struct ScanResItem{
     pub ssid: Vec<u8>,
     pub security_type: u8,
     pub encryption_type: u8,
     pub rssi: u8,
 }
 
-impl HACommJoinScanResItem{
+impl ScanResItem{
     pub fn new(data: Vec<u8>, header_offset: usize) -> Result<Self, HbrsError>{
 		if data.len() < ResponseItem::DataSize.get_value(){
 			return Err(HbrsError::InvalidScanDataLength);

@@ -3,6 +3,7 @@ pub enum HbrsError {
     DataLengthExceedsLimit,
     BadMacAddressLength,
     BadMacAddressValues,
+    BadJoinEnumRes,
     BadIpv4AddressLength,
     InvalidScanDataLength,
     BadSSID,
@@ -21,6 +22,7 @@ impl HbrsError {
             HbrsError::BadIpv4AddressLength => "Invalid IPv4 address size".to_string(),
             HbrsError::InvalidScanDataLength => "Invalid scan data length".to_string(),
             HbrsError::BadSSID => "Bad SSID".to_string(),
+            HbrsError::BadJoinEnumRes => "Bad join enum response data".to_string(),
         }
     }
 }

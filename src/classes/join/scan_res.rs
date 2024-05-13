@@ -1,10 +1,10 @@
-use super::ha_comm_join_scan_response_item::HACommJoinScanResItem;
+use super::scan_res_item::ScanResItem;
 use crate::consts::{errors::HbrsError, response_item::ResponseItem::{DataSize, MinRSSI}};
-pub struct HACommJoinScanRes{
-    pub wifis: Vec<HACommJoinScanResItem>,
+pub struct ScanRes{
+    pub wifis: Vec<ScanResItem>,
 }
 
-impl HACommJoinScanRes{
+impl ScanRes{
     pub fn new() -> Self{
         Self{
             wifis: Vec::new(),
@@ -16,7 +16,7 @@ impl HACommJoinScanRes{
             return Err(HbrsError::InvalidScanDataLength)
         }
 
-        let new_item = match HACommJoinScanResItem::new(data, header_offset){
+        let new_item = match ScanResItem::new(data, header_offset){
             Ok(item) => item,
             Err(err) => return Err(err),
         };
