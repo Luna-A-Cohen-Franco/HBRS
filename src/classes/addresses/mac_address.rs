@@ -48,4 +48,12 @@ impl MacAddress {
 
         return MacAddress::new(bytes);
     }
+
+    pub fn get_bytes_mut(&mut self) -> &mut Vec<u8> {
+        return &mut self.bytes;
+    }
+
+    pub fn get_bytes_ref(&self) -> &Vec<u8> {
+        return &self.bytes;
+    }
 }

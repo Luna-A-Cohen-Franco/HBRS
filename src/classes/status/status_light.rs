@@ -1,5 +1,6 @@
 use crate::classes::{endpoint::endpoint_value::EndpointValue, enums::endpoint_value_type::EndpointValueType};
 
+#[derive(Debug, Clone)]
 pub struct StatusLight{
     endpoint_values: Vec<EndpointValue>,
 }

@@ -1,4 +1,3 @@
-workspace = { members = ["hbrstest"] }
 [package]
 name = "hbrs"
 version = "0.1.0"

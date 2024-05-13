@@ -1,5 +1,6 @@
 use crate::{classes::{endpoint::endpoint_value::EndpointValue, enums::endpoint_value_type::EndpointValueType}, utils::byte_arrays_helper::ByteArraysHelper};
 
+#[derive(Debug, Clone)]
 pub struct StatusHVAC{
     endpoint_values: Vec<EndpointValue>,
 }

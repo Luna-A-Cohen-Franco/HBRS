@@ -1,5 +1,7 @@
 use super::scan_res_item::ScanResItem;
 use crate::consts::{errors::HbrsError, response_item::ResponseItem::{DataSize, MinRSSI}};
+
+#[derive(Debug, Clone)]
 pub struct ScanRes{
     pub wifis: Vec<ScanResItem>,
 }
@@ -47,6 +49,36 @@ impl ScanRes{
         self.wifis.push(new_item);
 
         return Ok(true);
+    }
+
+    pub fn get_bytes(&self) -> Vec<u8>{
+        let mut bytes = vec![];
+
+        for wifi in &self.wifis{
+            bytes.extend_from_slice(&wifi.get_bytes());
+        }
+
+        return bytes;
+    }
+
+    pub fn get_wifis(&self) -> Vec<ScanResItem>{
+        return self.wifis.clone();
+    }
+
+    pub fn set_wifis(&mut self, wifis: Vec<ScanResItem>){
+        self.wifis = wifis;
+    }
+
+    pub fn get_wifi(&self, ssid: &str) -> Option<ScanResItem>{
+        return self.wifis.iter().find(|i| i.get_ssid_as_str().unwrap().to_lowercase() == ssid.to_lowercase()).cloned();
+    }
+
+    pub fn get_wifi_by_index(&self, index: usize) -> Option<ScanResItem>{
+        return self.wifis.get(index).cloned();
+    }
+
+    pub fn get_wifi_count(&self) -> usize{
+        return self.wifis.len();
     }
 }
 

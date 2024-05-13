@@ -2,6 +2,7 @@ use crate::classes::addresses::mac_address::MacAddress;
 use crate::consts::errors::HbrsError;
 use crate::consts::other::Other;
 
+#[derive(Debug)]
 pub struct Header{
     protocol_version: u8,
     source_mac: MacAddress,
@@ -107,5 +108,65 @@ impl Header{
 
     pub fn get_id(&self) -> u8{
         return self.command_id;
+    }
+
+    pub fn set_id(&mut self, id: u8){
+        self.command_id = id;
+    }
+
+    pub fn get_source_endpoint(&self) -> u8{
+        return self.source_endpoint;
+    }
+
+    pub fn set_source_endpoint(&mut self, endpoint: u8){
+        self.source_endpoint = endpoint;
+    }
+
+    pub fn get_destination_endpoint(&self) -> u8{
+        return self.destination_endpoint;
+    }
+
+    pub fn set_destination_endpoint(&mut self, endpoint: u8){
+        self.destination_endpoint = endpoint;
+    }
+
+    pub fn get_sequence_number(&self) -> u8{
+        return self.sequence_number;
+    }
+
+    pub fn set_sequence_number(&mut self, sequence_number: u8){
+        self.sequence_number = sequence_number;
+    }
+
+    pub fn get_source_mac(&self) -> MacAddress{
+        return self.source_mac.clone();
+    }
+
+    pub fn set_source_mac(&mut self, mac: MacAddress){
+        self.source_mac = mac;
+    }
+
+    pub fn get_destination_mac(&self) -> MacAddress{
+        return self.destination_mac.clone();
+    }
+
+    pub fn set_destination_mac(&mut self, mac: MacAddress){
+        self.destination_mac = mac;
+    }
+
+    pub fn get_protocol_version(&self) -> u8{
+        return self.protocol_version;
+    }
+
+    pub fn set_protocol_version(&mut self, version: u8){
+        self.protocol_version = version;
+    }
+
+    pub fn get_mac_of_last_response(&self) -> MacAddress{
+        return self.mac_of_last_response.clone();
+    }
+
+    pub fn set_mac_of_last_response(&mut self, mac: MacAddress){
+        self.mac_of_last_response = mac;
     }
 }

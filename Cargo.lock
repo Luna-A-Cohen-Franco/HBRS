@@ -5,10 +5,3 @@ version = 3
 [[package]]
 name = "hbrs"
 version = "0.1.0"
-
-[[package]]
-name = "hbrstest"
-version = "0.1.0"
-dependencies = [
- "hbrs",
-]

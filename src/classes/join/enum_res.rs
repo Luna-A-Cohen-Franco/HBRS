@@ -1,5 +1,6 @@
 use crate::consts::errors::HbrsError;
 
+#[derive(Debug, Clone)]
 pub struct EnumRes{
     app_ver: String,
     device_model: String,
@@ -61,4 +62,33 @@ impl EnumRes{
         return Ok(true)
     }
 
+    pub fn get_bytes(&self) -> Vec<u8>{
+        let mut bytes = vec![];
+        bytes.extend_from_slice(self.app_ver.as_bytes());
+        return bytes;
+    }
+
+    pub fn get_app_ver(&self) -> String{
+        return self.app_ver.clone();
+    }
+
+    pub fn get_device_model(&self) -> String{
+        return self.device_model.clone();
+    }
+
+    pub fn get_firmware_ver(&self) -> String{
+        return self.firmware_ver.clone();
+    }
+
+    pub fn set_app_ver(&mut self, app_ver: String){
+        self.app_ver = app_ver;
+    }
+
+    pub fn set_device_model(&mut self, device_model: String){
+        self.device_model = device_model;
+    }
+
+    pub fn set_firmware_ver(&mut self, firmware_ver: String){
+        self.firmware_ver = firmware_ver;
+    }
 }

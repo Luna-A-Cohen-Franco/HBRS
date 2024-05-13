@@ -2,6 +2,7 @@ use crate::classes::{join::join::Join, status::status::Status};
 
 use super::{custom_comm::CustomComm, dim::Dim, header::Header, hvac_comm::HVACComm, ping::Ping, set_auto_off::SetAutoOff, set_mode::SetMode};
 
+#[derive(Debug, Clone)]
 pub struct HACommand{
     header: Header,
     join: Option<Join>,
@@ -23,7 +24,7 @@ pub struct HACommand{
 }
 
 impl HACommand{
-    fn new() -> Self{
+    pub fn new() -> Self{
         Self{
             header: Header::new(),
             join: None,
@@ -63,4 +64,82 @@ impl HACommand{
             _ => return Vec::new(),
         }
     }
+
+    pub fn get_header_ref(&self) -> &Header{
+        &self.header
+    }
+
+    pub fn get_header_mut(&mut self) -> &mut Header{
+        &mut self.header
+    }
+
+    pub fn get_id(&self) -> u8{
+        self.header.get_id()
+    }
+
+    pub fn get_join_ref(&self) -> &Join{
+        self.join.as_ref().unwrap()
+    }
+
+    pub fn get_join_mut(&mut self) -> &mut Join{
+        self.join.as_mut().unwrap()
+    }
+
+    pub fn get_ping_ref(&self) -> &Ping{
+        self.ping.as_ref().unwrap()
+    }
+
+    pub fn get_ping_mut(&mut self) -> &mut Ping{
+        self.ping.as_mut().unwrap()
+    }
+
+    pub fn get_status_ref(&self) -> &Status{
+        self.status.as_ref().unwrap()
+    }
+
+    pub fn get_status_mut(&mut self) -> &mut Status{
+        self.status.as_mut().unwrap()
+    }
+
+    pub fn get_hvac_set_mode_ref(&self) -> &SetMode{
+        self.hvac_set_mode.as_ref().unwrap()
+    }
+
+    pub fn get_hvac_set_mode_mut(&mut self) -> &mut SetMode{
+        self.hvac_set_mode.as_mut().unwrap()
+    }
+
+    pub fn get_hvac_command_ref(&self) -> &HVACComm{
+        self.hvac_command.as_ref().unwrap()
+    }
+
+    pub fn get_hvac_command_mut(&mut self) -> &mut HVACComm{
+        self.hvac_command.as_mut().unwrap()
+    }
+
+    pub fn get_custom_command_ref(&self) -> &CustomComm{
+        self.custom_command.as_ref().unwrap()
+    }
+
+    pub fn get_custom_command_mut(&mut self) -> &mut CustomComm{
+        self.custom_command.as_mut().unwrap()
+    }
+
+    pub fn get_dim_cmd_ref(&self) -> &Dim{
+        self.dim_cmd.as_ref().unwrap()
+    }
+
+    pub fn get_dim_cmd_mut(&mut self) -> &mut Dim{
+        self.dim_cmd.as_mut().unwrap()
+    }
+
+    pub fn get_set_auto_off_ref(&self) -> &SetAutoOff{
+        self.set_auto_off.as_ref().unwrap()
+    }
+
+    pub fn get_set_auto_off_mut(&mut self) -> &mut SetAutoOff{
+        self.set_auto_off.as_mut().unwrap()
+    }
+
+    
 }

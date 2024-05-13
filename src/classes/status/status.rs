@@ -2,6 +2,7 @@ use crate::classes::endpoint::endpoint_value::EndpointValue;
 
 use super::{status_hvac::StatusHVAC, status_light::StatusLight};
 
+#[derive(Debug, Clone)]
 pub struct Status{
 	endpoint_values: Vec<EndpointValue>,
 	status_type: u8,
@@ -106,101 +107,57 @@ impl Status{
 		
 		return true;
 	}
-}
-/*
-public class HACommand_Status
-{
-	public EndpointValues pTheEndpointValues;
 
-	protected byte StatusType { get; private set; }
-
-	private HACommand_StatusLight Light { get; set; }
-
-	private HACommand_StatusHVAC HVAC { get; set; }
-
-	//private HACommand_StatusCurtain Curtain { get; set; }
-
-	//private HACommand_StatusIAS IASSensor { get; set; }
-
-	//private HACommand_StatusDoorLock DoorLock { get; set; }
-
-	public EndpointValues TheEndpointValues
-	{
-		get
-		{
-			switch (StatusType)
-			{
-			case 4:
-				//pTheEndpointValues.Values = Curtain.EndpointValues;
-				break;
-			case 6:
-				pTheEndpointValues.Values = HVAC.EndpointValues;
-				break;
-			case 1:
-				pTheEndpointValues.Values = Light.EndpointValues;
-				break;
-			case 8:
-				//pTheEndpointValues.Values = IASSensor.EndpointValues;
-				break;
-			case 7:
-				//pTheEndpointValues.Values = DoorLock.EndpointValues;
-				break;
-			}
-			return pTheEndpointValues;
-		}
+	pub fn get_endpoint_values(&self) -> Vec<EndpointValue>{
+		return self.endpoint_values.iter().cloned().collect();
 	}
 
-	public HACommand_Status()
-	{
-		pTheEndpointValues = new EndpointValues();
+	pub fn get_status_type(&self) -> u8{
+		return self.status_type;
 	}
 
-	public void SetBytes(byte[] data, int headerOffset)
-	{
-		StatusType = data[headerOffset];
-		switch (StatusType)
-		{
-		case 4:
-			/*if (Curtain == null)
-			{
-				Curtain = new HACommand_StatusCurtain();
-			}
-			Curtain.SetBytes(data, headerOffset + 1);*/
-			break;
-		case 6:
-			if (HVAC == null)
-			{
-				HVAC = new HACommand_StatusHVAC();
-			}
-			HVAC.SetBytes(data, headerOffset + 1);
-			break;
-		case 1:
-			if (Light == null)
-			{
-				Light = new HACommand_StatusLight();
-			}
-			Light.SetBytes(data, headerOffset + 1);
-			break;
-		case 8:
-			/*if (IASSensor == null)
-			{
-				IASSensor = new HACommand_StatusIAS();
-			}
-			IASSensor.SetBytes(data, headerOffset + 1);*/
-			break;
-		case 7:
-			/*if (DoorLock == null)
-			{
-				DoorLock = new HACommand_StatusDoorLock();
-			}
-			DoorLock.SetBytes(data, headerOffset + 1);*/
-			break;
-		case 2:
-		case 3:
-		case 5:
-			break;
-		}
+	pub fn set_status_type(&mut self, status_type: u8){
+		self.status_type = status_type;
 	}
+
+	pub fn get_light(&self) -> Option<StatusLight>{
+		return self.light.clone();
+	}
+
+	pub fn set_light(&mut self, light: StatusLight){
+		self.light = Some(light);
+	}
+
+	pub fn get_hvac(&self) -> Option<StatusHVAC>{
+		return self.hvac.clone();
+	}
+
+	pub fn set_hvac(&mut self, hvac: StatusHVAC){
+		self.hvac = Some(hvac);
+	}
+
+	/*pub fn get_curtain(&self) -> Option<StatusCurtain>{
+		return self.curtain.clone();
+	}
+
+	pub fn set_curtain(&mut self, curtain: StatusCurtain){
+		self.curtain = Some(curtain);
+	}
+
+	pub fn get_ias_sensor(&self) -> Option<StatusIAS>{
+		return self.ias_sensor.clone();
+	}
+
+	pub fn set_ias_sensor(&mut self, ias_sensor: StatusIAS){
+		self.ias_sensor = Some(ias_sensor);
+	}
+
+	pub fn get_door_lock(&self) -> Option<StatusDoorLock>{
+		return self.door_lock.clone();
+	}
+
+	pub fn set_door_lock(&mut self, door_lock: StatusDoorLock){
+		self.door_lock = Some(door_lock);
+	}*/
 }
 
-*/

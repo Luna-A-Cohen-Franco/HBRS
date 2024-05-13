@@ -1,3 +1,4 @@
+#[derive(Debug, Clone)]
 pub struct Dim{
     dim_value: u8,
 }

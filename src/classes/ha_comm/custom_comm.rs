@@ -1,5 +1,6 @@
 use crate::utils::byte_arrays_helper::ByteArraysHelper;
 
+#[derive(Debug, Clone)]
 pub struct CustomComm{
     pub command: u8,
     pub data: Vec<u8>,
@@ -24,5 +25,21 @@ impl CustomComm{
         }
 
         return ByteArraysHelper::combine_1v_1b(&self.data, self.command);
+    }
+
+    pub fn get_command_ref(&self) -> &u8{
+        return &self.command;
+    }
+
+    pub fn get_command_mut(&mut self) -> &mut u8{
+        return &mut self.command;
+    }
+
+    pub fn get_data_ref(&self) -> &Vec<u8>{
+        return &self.data;
+    }
+
+    pub fn get_data_mut(&mut self) -> &mut Vec<u8>{
+        return &mut self.data;
     }
 }

@@ -1,6 +1,6 @@
 use crate::classes::enums::endpoint_value_type::EndpointValueType;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct EndpointValue{
     value_type: EndpointValueType,
     value: String,
@@ -20,16 +20,19 @@ impl EndpointValue{
         }
     }
 
-    pub fn get_value(&self) -> String{
-        return self.value.clone();
+    pub fn get_value_type_ref(&self) -> &EndpointValueType {
+        return &self.value_type;
     }
-    pub fn get_value_type(&self) -> EndpointValueType{
-        return self.value_type.clone();
+
+    pub fn get_value_type_mut(&mut self) -> &mut EndpointValueType {
+        return &mut self.value_type;
     }
-    pub fn set_value(&mut self, value: String){
-        self.value = value;
+
+    pub fn get_value_ref(&self) -> &String {
+        return &self.value;
     }
-    pub fn set_value_type(&mut self, value_type: EndpointValueType){
-        self.value_type = value_type;
+
+    pub fn get_value_mut(&mut self) -> &mut String {
+        return &mut self.value;
     }
 }

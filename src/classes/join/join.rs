@@ -2,6 +2,7 @@ use crate::{consts::errors::HbrsError, utils::byte_arrays_helper::ByteArraysHelp
 
 use super::{cloud_notif_ip::CloudNotifIP, enum_res::EnumRes, join_req::JoinReq, scan_res::ScanRes};
 
+#[derive(Debug, Clone)]
 pub struct Join{
     sub_command: u8,
     join_req: Option<JoinReq>,
@@ -64,5 +65,45 @@ impl Join{
         }
 
         return Ok(false);
+    }
+
+    pub fn get_sub_command(&self) -> u8{
+        return self.sub_command;
+    }
+
+    pub fn set_sub_command(&mut self, sub_command: u8){
+        self.sub_command = sub_command;
+    }
+
+    pub fn get_join_req(&self) -> Option<JoinReq>{
+        return self.join_req.clone();
+    }
+
+    pub fn set_join_req(&mut self, join_req: JoinReq){
+        self.join_req = Some(join_req);
+    }
+
+    pub fn get_enum_res(&self) -> Option<EnumRes>{
+        return self.enum_res.clone();
+    }
+
+    pub fn set_enum_res(&mut self, enum_res: EnumRes){
+        self.enum_res = Some(enum_res);
+    }
+
+    pub fn get_scan_res(&self) -> Option<ScanRes>{
+        return self.scan_res.clone();
+    }
+
+    pub fn set_scan_res(&mut self, scan_res: ScanRes){
+        self.scan_res = Some(scan_res);
+    }
+
+    pub fn get_cloud_notif_ip(&self) -> Option<CloudNotifIP>{
+        return self.cloud_notif_ip.clone();
+    }
+
+    pub fn set_cloud_notif_ip(&mut self, cloud_notif_ip: CloudNotifIP){
+        self.cloud_notif_ip = Some(cloud_notif_ip);
     }
 }
