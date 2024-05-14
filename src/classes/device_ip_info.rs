@@ -3,9 +3,9 @@ use super::addresses::{ipv4::IPv4Addr, mac_address::MacAddress};
 #[derive(Debug, Clone)]
 pub struct DeviceIPInfo
 {
-   pub device_id: i64,
-   pub device_mac: MacAddress,
-   pub local_ip_address: IPv4Addr
+   device_id: i64,
+   device_mac: MacAddress,
+   local_ip_address: IPv4Addr
 }
 
 impl DeviceIPInfo{
@@ -17,27 +17,27 @@ impl DeviceIPInfo{
         }
     }
 
-    pub fn get_device_id(&self) -> i64{
-        self.device_id
+    pub fn get_device_id_ref(&self) -> &i64 {
+        &self.device_id
     }
-
-    pub fn get_device_mac(&self) -> MacAddress{
-        self.device_mac.clone()
+    
+    pub fn get_device_id_mut(&mut self) -> &mut i64 {
+        &mut self.device_id
     }
-
-    pub fn get_local_ip_address(&self) -> IPv4Addr{
-        self.local_ip_address.clone()
+    
+    pub fn get_device_mac_ref(&self) -> &MacAddress {
+        &self.device_mac
     }
-
-    pub fn set_device_id(&mut self, device_id: i64){
-        self.device_id = device_id;
+    
+    pub fn get_device_mac_mut(&mut self) -> &mut MacAddress {
+        &mut self.device_mac
     }
-
-    pub fn set_device_mac(&mut self, device_mac: MacAddress){
-        self.device_mac = device_mac;
+    
+    pub fn get_local_ip_address_ref(&self) -> &IPv4Addr {
+        &self.local_ip_address
     }
-
-    pub fn set_local_ip_address(&mut self, local_ip_address: IPv4Addr){
-        self.local_ip_address = local_ip_address;
+    
+    pub fn get_local_ip_address_mut(&mut self) -> &mut IPv4Addr {
+        &mut self.local_ip_address
     }
 }

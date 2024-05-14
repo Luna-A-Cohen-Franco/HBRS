@@ -2,8 +2,8 @@ use crate::utils::byte_arrays_helper::ByteArraysHelper;
 
 #[derive(Debug, Clone)]
 pub struct CustomComm{
-    pub command: u8,
-    pub data: Vec<u8>,
+    command: u8,
+    data: Vec<u8>,
 }
 
 impl CustomComm{

@@ -4,10 +4,10 @@ use crate::consts::{errors::HbrsError, other::Other::KeyLength, response_item::R
 
 #[derive(Debug, Clone)]
 pub struct ScanResItem{
-    pub ssid: Vec<u8>,
-    pub security_type: u8,
-    pub encryption_type: u8,
-    pub rssi: u8,
+    ssid: Vec<u8>,
+    security_type: u8,
+    encryption_type: u8,
+    rssi: u8,
 }
 
 impl ScanResItem{
@@ -46,35 +46,35 @@ impl ScanResItem{
         return bytes;
     }
 
-    pub fn get_ssid(&self) -> Vec<u8>{
-        return self.ssid.clone();
+    pub fn get_ssid_ref(&self) -> &Vec<u8> {
+        &self.ssid
     }
-
-    pub fn set_ssid(&mut self, ssid: Vec<u8>){
-        self.ssid = ssid;
+    
+    pub fn get_ssid_mut(&mut self) -> &mut Vec<u8> {
+        &mut self.ssid
     }
-
-    pub fn get_security_type(&self) -> u8{
-        return self.security_type;
+    
+    pub fn get_security_type_ref(&self) -> &u8 {
+        &self.security_type
     }
-
-    pub fn set_security_type(&mut self, security_type: u8){
-        self.security_type = security_type;
+    
+    pub fn get_security_type_mut(&mut self) -> &mut u8 {
+        &mut self.security_type
     }
-
-    pub fn get_encryption_type(&self) -> u8{
-        return self.encryption_type;
+    
+    pub fn get_encryption_type_ref(&self) -> &u8 {
+        &self.encryption_type
     }
-
-    pub fn set_encryption_type(&mut self, encryption_type: u8){
-        self.encryption_type = encryption_type;
+    
+    pub fn get_encryption_type_mut(&mut self) -> &mut u8 {
+        &mut self.encryption_type
     }
-
-    pub fn get_rssi(&self) -> u8{
-        return self.rssi;
+    
+    pub fn get_rssi_ref(&self) -> &u8 {
+        &self.rssi
     }
-
-    pub fn set_rssi(&mut self, rssi: u8){
-        self.rssi = rssi;
+    
+    pub fn get_rssi_mut(&mut self) -> &mut u8 {
+        &mut self.rssi
     }
 }

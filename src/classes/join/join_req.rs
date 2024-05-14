@@ -2,10 +2,10 @@ use crate::{consts::{other::Other, errors::HbrsError}, utils::byte_arrays_helper
 
 #[derive(Debug, Clone)]
 pub struct JoinReq{
-    pub ssid: Vec<u8>,
-    pub security_type: u8,
-    pub encryption_type: u8,
-    pub key: Vec<u8>,
+    ssid: Vec<u8>,
+    security_type: u8,
+    encryption_type: u8,
+    key: Vec<u8>,
 }
 
 impl JoinReq{
@@ -29,34 +29,34 @@ impl JoinReq{
         return ByteArraysHelper::combine_2v(&first, &second);
     }
 
-    pub fn get_ssid(&self) -> Vec<u8>{
-        return self.ssid.clone();
+    pub fn get_ssid_ref(&self) -> &Vec<u8> {
+        &self.ssid
     }
-
-    pub fn set_ssid(&mut self, ssid: Vec<u8>){
-        self.ssid = ssid;
+    
+    pub fn get_ssid_mut(&mut self) -> &mut Vec<u8> {
+        &mut self.ssid
     }
-
-    pub fn get_security_type(&self) -> u8{
-        return self.security_type;
+    
+    pub fn get_security_type_ref(&self) -> &u8 {
+        &self.security_type
     }
-
-    pub fn set_security_type(&mut self, security_type: u8){
-        self.security_type = security_type;
+    
+    pub fn get_security_type_mut(&mut self) -> &mut u8 {
+        &mut self.security_type
     }
-
-    pub fn get_encryption_type(&self) -> u8{
-        return self.encryption_type;
+    
+    pub fn get_encryption_type_ref(&self) -> &u8 {
+        &self.encryption_type
     }
-
-    pub fn set_encryption_type(&mut self, encryption_type: u8){
-        self.encryption_type = encryption_type;
+    
+    pub fn get_encryption_type_mut(&mut self) -> &mut u8 {
+        &mut self.encryption_type
     }
-
-    pub fn get_key(&self) -> Vec<u8>{
-        return self.key.clone();
+    
+    pub fn get_key_ref(&self) -> &Vec<u8> {
+        &self.key
     }
-
+    
     pub fn set_key(&mut self, key: Vec<u8>) -> Result<(), HbrsError>{
         self.key = match ByteArraysHelper::cp_arr_bytes_fill(&key, Other::KeyLength.get_value()){
             Ok(value) => value,

@@ -36,16 +36,24 @@ impl StatusHVAC{
     }
 
     pub fn find_endpoint_value(&mut self, value_type: EndpointValueType, value: String){
-        match self.endpoint_values.iter_mut().find(|v| (**v).get_value_type() == EndpointValueType::HVACFlags){
+        match self.endpoint_values.iter_mut().find(|v| *v.get_value_type_ref() == EndpointValueType::HVACFlags){
             Some(endpoint_value) => {
-                endpoint_value.set_value(value);
+                *endpoint_value.get_value_mut() = value;
             },
             None => {
                 let mut endpoint_value = EndpointValue::new_empty();
-                endpoint_value.set_value_type(value_type);
-                endpoint_value.set_value(value);
+                *endpoint_value.get_value_type_mut() = value_type;
+                *endpoint_value.get_value_mut() = value;
                 self.endpoint_values.push(endpoint_value);
             }
         }
+    }
+
+    pub fn get_endpoint_values_ref(&self) -> &Vec<EndpointValue> {
+        &self.endpoint_values
+    }
+    
+    pub fn get_endpoint_values_mut(&mut self) -> &mut Vec<EndpointValue> {
+        &mut self.endpoint_values
     }
 }

@@ -108,56 +108,62 @@ impl Status{
 		return true;
 	}
 
-	pub fn get_endpoint_values(&self) -> Vec<EndpointValue>{
-		return self.endpoint_values.iter().cloned().collect();
+	pub fn get_endpoint_values_ref(&self) -> &Vec<EndpointValue> {
+		&self.endpoint_values
+	}
+	
+	pub fn get_endpoint_values_mut(&mut self) -> &mut Vec<EndpointValue> {
+		&mut self.endpoint_values
+	}
+	
+	pub fn get_status_type_ref(&self) -> &u8 {
+		&self.status_type
+	}
+	
+	pub fn get_status_type_mut(&mut self) -> &mut u8 {
+		&mut self.status_type
+	}
+	
+	pub fn get_light_ref(&self) -> Option<&StatusLight> {
+		self.light.as_ref()
+	}
+	
+	pub fn get_light_mut(&mut self) -> Option<&mut StatusLight> {
+		self.light.as_mut()
+	}
+	
+	pub fn get_hvac_ref(&self) -> Option<&StatusHVAC> {
+		self.hvac.as_ref()
+	}
+	
+	pub fn get_hvac_mut(&mut self) -> Option<&mut StatusHVAC> {
+		self.hvac.as_mut()
 	}
 
-	pub fn get_status_type(&self) -> u8{
-		return self.status_type;
+	/*
+	pub fn get_curtain_ref(&self) -> Option<&StatusCurtain> {
+		self.curtain.as_ref()
 	}
 
-	pub fn set_status_type(&mut self, status_type: u8){
-		self.status_type = status_type;
+	pub fn get_curtain_mut(&mut self) -> Option<&mut StatusCurtain> {
+		self.curtain.as_mut()
 	}
 
-	pub fn get_light(&self) -> Option<StatusLight>{
-		return self.light.clone();
+	pub fn get_ias_sensor_ref(&self) -> Option<&StatusIAS> {
+		self.ias_sensor.as_ref()
 	}
 
-	pub fn set_light(&mut self, light: StatusLight){
-		self.light = Some(light);
+	pub fn get_ias_sensor_mut(&mut self) -> Option<&mut StatusIAS> {
+		self.ias_sensor.as_mut()
 	}
 
-	pub fn get_hvac(&self) -> Option<StatusHVAC>{
-		return self.hvac.clone();
+	pub fn get_door_lock_ref(&self) -> Option<&StatusDoorLock> {
+		self.door_lock.as_ref()
 	}
 
-	pub fn set_hvac(&mut self, hvac: StatusHVAC){
-		self.hvac = Some(hvac);
+	pub fn get_door_lock_mut(&mut self) -> Option<&mut StatusDoorLock> {
+		self.door_lock.as_mut()
 	}
-
-	/*pub fn get_curtain(&self) -> Option<StatusCurtain>{
-		return self.curtain.clone();
-	}
-
-	pub fn set_curtain(&mut self, curtain: StatusCurtain){
-		self.curtain = Some(curtain);
-	}
-
-	pub fn get_ias_sensor(&self) -> Option<StatusIAS>{
-		return self.ias_sensor.clone();
-	}
-
-	pub fn set_ias_sensor(&mut self, ias_sensor: StatusIAS){
-		self.ias_sensor = Some(ias_sensor);
-	}
-
-	pub fn get_door_lock(&self) -> Option<StatusDoorLock>{
-		return self.door_lock.clone();
-	}
-
-	pub fn set_door_lock(&mut self, door_lock: StatusDoorLock){
-		self.door_lock = Some(door_lock);
-	}*/
+	*/
 }
 

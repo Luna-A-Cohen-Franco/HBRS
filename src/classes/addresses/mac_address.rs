@@ -17,10 +17,6 @@ impl MacAddress {
         return Self { bytes: Vec::new() };
     }
 
-    pub fn get_bytes(&self) -> &Vec<u8> {
-        &self.bytes
-    }
-
     pub fn display(&self) {
         for byte in &self.bytes {
             print!("{:02X}:", byte);

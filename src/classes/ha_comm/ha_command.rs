@@ -47,7 +47,7 @@ impl HACommand{
     }
 
     pub fn get_bytes(&self) -> Vec<u8>{
-        match self.header.get_id(){
+        match self.header.get_id_ref(){
             1 | 2 | 34 | 40 | 41 | 164 | 228 => return self.header.get_bytes(),
             3 => return vec![self.dim_cmd.as_ref().unwrap().get_byte()],
             // 39 =>  return self.curtain_position.as_ref().unwrap().get_bytes(),
@@ -65,81 +65,141 @@ impl HACommand{
         }
     }
 
-    pub fn get_header_ref(&self) -> &Header{
+    pub fn get_header_ref(&self) -> &Header {
         &self.header
     }
-
-    pub fn get_header_mut(&mut self) -> &mut Header{
+    
+    pub fn get_header_mut(&mut self) -> &mut Header {
         &mut self.header
     }
-
-    pub fn get_id(&self) -> u8{
-        self.header.get_id()
-    }
-
-    pub fn get_join_ref(&self) -> &Join{
-        self.join.as_ref().unwrap()
-    }
-
-    pub fn get_join_mut(&mut self) -> &mut Join{
-        self.join.as_mut().unwrap()
-    }
-
-    pub fn get_ping_ref(&self) -> &Ping{
-        self.ping.as_ref().unwrap()
-    }
-
-    pub fn get_ping_mut(&mut self) -> &mut Ping{
-        self.ping.as_mut().unwrap()
-    }
-
-    pub fn get_status_ref(&self) -> &Status{
-        self.status.as_ref().unwrap()
-    }
-
-    pub fn get_status_mut(&mut self) -> &mut Status{
-        self.status.as_mut().unwrap()
-    }
-
-    pub fn get_hvac_set_mode_ref(&self) -> &SetMode{
-        self.hvac_set_mode.as_ref().unwrap()
-    }
-
-    pub fn get_hvac_set_mode_mut(&mut self) -> &mut SetMode{
-        self.hvac_set_mode.as_mut().unwrap()
-    }
-
-    pub fn get_hvac_command_ref(&self) -> &HVACComm{
-        self.hvac_command.as_ref().unwrap()
-    }
-
-    pub fn get_hvac_command_mut(&mut self) -> &mut HVACComm{
-        self.hvac_command.as_mut().unwrap()
-    }
-
-    pub fn get_custom_command_ref(&self) -> &CustomComm{
-        self.custom_command.as_ref().unwrap()
-    }
-
-    pub fn get_custom_command_mut(&mut self) -> &mut CustomComm{
-        self.custom_command.as_mut().unwrap()
-    }
-
-    pub fn get_dim_cmd_ref(&self) -> &Dim{
-        self.dim_cmd.as_ref().unwrap()
-    }
-
-    pub fn get_dim_cmd_mut(&mut self) -> &mut Dim{
-        self.dim_cmd.as_mut().unwrap()
-    }
-
-    pub fn get_set_auto_off_ref(&self) -> &SetAutoOff{
-        self.set_auto_off.as_ref().unwrap()
-    }
-
-    pub fn get_set_auto_off_mut(&mut self) -> &mut SetAutoOff{
-        self.set_auto_off.as_mut().unwrap()
-    }
-
     
+    pub fn get_join_ref(&self) -> Option<&Join> {
+        self.join.as_ref()
+    }
+    
+    pub fn get_join_mut(&mut self) -> Option<&mut Join> {
+        self.join.as_mut()
+    }
+    
+    pub fn get_ping_ref(&self) -> Option<&Ping> {
+        self.ping.as_ref()
+    }
+    
+    pub fn get_ping_mut(&mut self) -> Option<&mut Ping> {
+        self.ping.as_mut()
+    }
+    
+    pub fn get_status_ref(&self) -> Option<&Status> {
+        self.status.as_ref()
+    }
+    
+    pub fn get_status_mut(&mut self) -> Option<&mut Status> {
+        self.status.as_mut()
+    }
+    
+    pub fn get_hvac_set_mode_ref(&self) -> Option<&SetMode> {
+        self.hvac_set_mode.as_ref()
+    }
+    
+    pub fn get_hvac_set_mode_mut(&mut self) -> Option<&mut SetMode> {
+        self.hvac_set_mode.as_mut()
+    }
+    
+    pub fn get_hvac_command_ref(&self) -> Option<&HVACComm> {
+        self.hvac_command.as_ref()
+    }
+    
+    pub fn get_hvac_command_mut(&mut self) -> Option<&mut HVACComm> {
+        self.hvac_command.as_mut()
+    }
+    
+    pub fn get_custom_command_ref(&self) -> Option<&CustomComm> {
+        self.custom_command.as_ref()
+    }
+    
+    pub fn get_custom_command_mut(&mut self) -> Option<&mut CustomComm> {
+        self.custom_command.as_mut()
+    }
+    
+    pub fn get_dim_cmd_ref(&self) -> Option<&Dim> {
+        self.dim_cmd.as_ref()
+    }
+    
+    pub fn get_dim_cmd_mut(&mut self) -> Option<&mut Dim> {
+        self.dim_cmd.as_mut()
+    }
+    
+    pub fn get_set_auto_off_ref(&self) -> Option<&SetAutoOff> {
+        self.set_auto_off.as_ref()
+    }
+    
+    pub fn get_set_auto_off_mut(&mut self) -> Option<&mut SetAutoOff> {
+        self.set_auto_off.as_mut()
+    }
+    
+    /*
+    pub fn get_door_lock_ref(&self) -> Option<&DoorLock> {
+        self.door_lock.as_ref()
+    }
+    
+    pub fn get_door_lock_mut(&mut self) -> Option<&mut DoorLock> {
+        self.door_lock.as_mut()
+    }
+    
+    pub fn get_curtain_position_ref(&self) -> Option<&CurtainPosition> {
+        self.curtain_position.as_ref()
+    }
+    
+    pub fn get_curtain_position_mut(&mut self) -> Option<&mut CurtainPosition> {
+        self.curtain_position.as_mut()
+    }
+    
+    pub fn get_ilearn_data_rsp_ref(&self) -> Option<&ILearnDataRsp> {
+        self.ilearn_data_rsp.as_ref()
+    }
+    
+    pub fn get_ilearn_data_rsp_mut(&mut self) -> Option<&mut ILearnDataRsp> {
+        self.ilearn_data_rsp.as_mut()
+    }
+    
+    pub fn get_activate_scene_ref(&self) -> Option<&ActivateScene> {
+        self.activate_scene.as_ref()
+    }
+    
+    pub fn get_activate_scene_mut(&mut self) -> Option<&mut ActivateScene> {
+        self.activate_scene.as_mut()
+    }
+    
+    pub fn get_HPA4911_status_rsp_ref(&self) -> Option<&HPA4911Status> {
+        self.HPA4911_status_rsp.as_ref()
+    }
+    
+    pub fn get_HPA4911_status_rsp_mut(&mut self) -> Option<&mut HPA4911Status> {
+        self.HPA4911_status_rsp.as_mut()
+    }
+    
+    pub fn get_HPA4413_status_rsp_ref(&self) -> Option<&HPA4413Status> {
+        self.HPA4413_status_rsp.as_ref()
+    }
+    
+    pub fn get_HPA4413_status_rsp_mut(&mut self) -> Option<&mut HPA4413Status> {
+        self.HPA4413_status_rsp.as_mut()
+    }
+    
+    pub fn get_HPA4414_status_rsp_ref(&self) -> Option<&HPA4414Status> {
+        self.HPA4414_status_rsp.as_ref()
+    }
+    
+    pub fn get_HPA4414_status_rsp_mut(&mut self) -> Option<&mut HPA4414Status> {
+        self.HPA4414_status_rsp.as_mut()
+    }
+    
+    pub fn get_fade_rate_ref(&self) -> Option<&FadeRate> {
+        self.fade_rate.as_ref()
+    }
+    
+    pub fn get_fade_rate_mut(&mut self) -> Option<&mut FadeRate> {
+        self.fade_rate.as_mut()
+    }
+    */    
 }

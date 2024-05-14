@@ -1,6 +1,6 @@
 use crate::utils::byte_arrays_helper::ByteArraysHelper;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct SetAutoOff{
     off_timeout: u8,
 }
@@ -18,11 +18,11 @@ impl SetAutoOff{
         return ByteArraysHelper::combine_2b(b1, b2);
     }
 
-    pub fn get_off_timeout(&self) -> u8{
-        return self.off_timeout;
+    pub fn get_off_timeout_ref(&self) -> &u8{
+        return &self.off_timeout;
     }
 
-    pub fn set_off_timeout(&mut self, off_timeout: u8){
-        self.off_timeout = off_timeout;
+    pub fn get_off_timeout_mut(&mut self) -> &mut u8{
+        return &mut self.off_timeout;
     }
 }

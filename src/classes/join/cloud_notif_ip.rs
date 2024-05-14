@@ -19,16 +19,20 @@ impl CloudNotifIP{
         return self.address.clone();
     }
 
-    pub fn get_address(&self) -> Vec<u8>{
-        return self.address.clone();
-    }
-
-    pub fn set_address(&mut self, address: Vec<u8>) -> Result<(), HbrsError>{
+    pub fn set_bytes(&mut self, address: Vec<u8>) -> Result<(), HbrsError>{
         self.address = match ByteArraysHelper::cp_arr_bytes_fill(&address, 16){
             Ok(v) => v,
             Err(e) => return Err(e),
         };
 
         Ok(())
+    }
+
+    pub fn get_address_ref(&self) -> &Vec<u8>{
+        return &self.address;
+    }
+
+    pub fn get_address_mut(&mut self) -> &mut Vec<u8>{
+        return &mut self.address;
     }
 }

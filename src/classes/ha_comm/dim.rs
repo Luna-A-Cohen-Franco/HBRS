@@ -13,4 +13,12 @@ impl Dim{
     pub fn get_byte(&self) -> u8{
         return self.dim_value;
     }
+
+    pub fn get_dim_value_ref(&self) -> &u8{
+        return &self.dim_value
+    }
+
+    pub fn get_dim_value_mut(&mut self) -> &mut u8{
+        return &mut self.dim_value
+    }
 }

@@ -68,27 +68,27 @@ impl EnumRes{
         return bytes;
     }
 
-    pub fn get_app_ver(&self) -> String{
-        return self.app_ver.clone();
+    pub fn get_app_ver_ref(&self) -> &String {
+        &self.app_ver
     }
-
-    pub fn get_device_model(&self) -> String{
-        return self.device_model.clone();
+    
+    pub fn get_app_ver_mut(&mut self) -> &mut String {
+        &mut self.app_ver
     }
-
-    pub fn get_firmware_ver(&self) -> String{
-        return self.firmware_ver.clone();
+    
+    pub fn get_device_model_ref(&self) -> &String {
+        &self.device_model
     }
-
-    pub fn set_app_ver(&mut self, app_ver: String){
-        self.app_ver = app_ver;
+    
+    pub fn get_device_model_mut(&mut self) -> &mut String {
+        &mut self.device_model
     }
-
-    pub fn set_device_model(&mut self, device_model: String){
-        self.device_model = device_model;
+    
+    pub fn get_firmware_ver_ref(&self) -> &String {
+        &self.firmware_ver
     }
-
-    pub fn set_firmware_ver(&mut self, firmware_ver: String){
-        self.firmware_ver = firmware_ver;
+    
+    pub fn get_firmware_ver_mut(&mut self) -> &mut String {
+        &mut self.firmware_ver
     }
 }

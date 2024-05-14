@@ -67,43 +67,43 @@ impl Join{
         return Ok(false);
     }
 
-    pub fn get_sub_command(&self) -> u8{
-        return self.sub_command;
+    pub fn get_sub_command_ref(&self) -> &u8 {
+        &self.sub_command
     }
-
-    pub fn set_sub_command(&mut self, sub_command: u8){
-        self.sub_command = sub_command;
+    
+    pub fn get_sub_command_mut(&mut self) -> &mut u8 {
+        &mut self.sub_command
     }
-
-    pub fn get_join_req(&self) -> Option<JoinReq>{
-        return self.join_req.clone();
+    
+    pub fn get_join_req_ref(&self) -> Option<&JoinReq> {
+        self.join_req.as_ref()
     }
-
-    pub fn set_join_req(&mut self, join_req: JoinReq){
-        self.join_req = Some(join_req);
+    
+    pub fn get_join_req_mut(&mut self) -> Option<&mut JoinReq> {
+        self.join_req.as_mut()
     }
-
-    pub fn get_enum_res(&self) -> Option<EnumRes>{
-        return self.enum_res.clone();
+    
+    pub fn get_enum_res_ref(&self) -> Option<&EnumRes> {
+        self.enum_res.as_ref()
     }
-
-    pub fn set_enum_res(&mut self, enum_res: EnumRes){
-        self.enum_res = Some(enum_res);
+    
+    pub fn get_enum_res_mut(&mut self) -> Option<&mut EnumRes> {
+        self.enum_res.as_mut()
     }
-
-    pub fn get_scan_res(&self) -> Option<ScanRes>{
-        return self.scan_res.clone();
+    
+    pub fn get_scan_res_ref(&self) -> Option<&ScanRes> {
+        self.scan_res.as_ref()
     }
-
-    pub fn set_scan_res(&mut self, scan_res: ScanRes){
-        self.scan_res = Some(scan_res);
+    
+    pub fn get_scan_res_mut(&mut self) -> Option<&mut ScanRes> {
+        self.scan_res.as_mut()
     }
-
-    pub fn get_cloud_notif_ip(&self) -> Option<CloudNotifIP>{
-        return self.cloud_notif_ip.clone();
+    
+    pub fn get_cloud_notif_ip_ref(&self) -> Option<&CloudNotifIP> {
+        self.cloud_notif_ip.as_ref()
     }
-
-    pub fn set_cloud_notif_ip(&mut self, cloud_notif_ip: CloudNotifIP){
-        self.cloud_notif_ip = Some(cloud_notif_ip);
+    
+    pub fn get_cloud_notif_ip_mut(&mut self) -> Option<&mut CloudNotifIP> {
+        self.cloud_notif_ip.as_mut()
     }
 }

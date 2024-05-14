@@ -3,7 +3,7 @@ use crate::consts::{errors::HbrsError, response_item::ResponseItem::{DataSize, M
 
 #[derive(Debug, Clone)]
 pub struct ScanRes{
-    pub wifis: Vec<ScanResItem>,
+    wifis: Vec<ScanResItem>,
 }
 
 impl ScanRes{
@@ -24,9 +24,9 @@ impl ScanRes{
         };
 
         // Checks validity of SSID
-        if new_item.ssid.iter().all(|&val| val == 0) 
+        if new_item.get_ssid_ref().iter().all(|&val| val == 0) 
             || new_item.get_ssid_as_str().is_err() 
-            || new_item.rssi <= MinRSSI.get_value() as u8{
+            || *new_item.get_rssi_ref() <= MinRSSI.get_value() as u8{
             return Err(HbrsError::BadSSID);
         }
 
@@ -39,8 +39,8 @@ impl ScanRes{
         
         match existing_item{
             Some(existing_item) => {
-                if existing_item.rssi < new_item.rssi{
-                    existing_item.rssi = new_item.rssi;
+                if existing_item.get_rssi_ref() < new_item.get_rssi_ref(){
+                    *existing_item.get_rssi_mut() = *new_item.get_rssi_ref();
                 }
             },
             None => {},
@@ -61,14 +61,6 @@ impl ScanRes{
         return bytes;
     }
 
-    pub fn get_wifis(&self) -> Vec<ScanResItem>{
-        return self.wifis.clone();
-    }
-
-    pub fn set_wifis(&mut self, wifis: Vec<ScanResItem>){
-        self.wifis = wifis;
-    }
-
     pub fn get_wifi(&self, ssid: &str) -> Option<ScanResItem>{
         return self.wifis.iter().find(|i| i.get_ssid_as_str().unwrap().to_lowercase() == ssid.to_lowercase()).cloned();
     }
@@ -77,8 +69,12 @@ impl ScanRes{
         return self.wifis.get(index).cloned();
     }
 
-    pub fn get_wifi_count(&self) -> usize{
-        return self.wifis.len();
+    pub fn get_wifis_ref(&self) -> &Vec<ScanResItem> {
+        &self.wifis
     }
+    
+    pub fn get_wifis_mut(&mut self) -> &mut Vec<ScanResItem> {
+        &mut self.wifis
+    }    
 }
 
