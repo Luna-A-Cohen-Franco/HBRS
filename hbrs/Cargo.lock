@@ -23,15 +23,8 @@ dependencies = [
 name = "hbrs"
 version = "0.1.0"
 dependencies = [
- "serde",
-]
-
-[[package]]
-name = "hbrs-bin"
-version = "0.1.0"
-dependencies = [
- "hbrs",
  "rand",
+ "serde",
  "serde_json",
 ]
 
