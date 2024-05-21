@@ -1,12 +1,13 @@
-use hbrs::classes::{ha_comm::{ha_command::HACommand, ping::Ping}, addresses::mac_address::MacAddress, join::{join::Join, join_req::JoinReq}, device_ip_info::DeviceIPInfo, endpoint::endpoint_ip_info::EndpointIPInformation};
+use hbrs::classes::{ha_comm::{ha_command::HACommand, ping::Ping}, addresses::mac_address::MacAddress, join::{join::Join, join_req::JoinReq}};
 use rand::Rng;
-use std::net::{UdpSocket, SocketAddr};
+use std::{net::{SocketAddr, UdpSocket}, sync::{atomic::{AtomicBool, Ordering}, Arc, Mutex}, thread};
 
+#[derive(Debug, Clone)]
 struct Runner{
-    mac: MacAddress,
-    ssid: Vec<u8>,
-    security_type: u8,
-    encryption_type: u8
+    pub mac: MacAddress,
+    pub ssid: Vec<u8>,
+    pub security_type: u8,
+    pub encryption_type: u8
 }
 
 impl Runner{
@@ -106,66 +107,186 @@ impl Runner{
         return Ok(res);
     }
 
-    fn data_recieved(&self) -> Result<HACommand, String>{
-        let socket = match UdpSocket::bind("0.0.0.0:0"){
-            Ok(sckt) => sckt,
-            Err(_) => return Err(String::from("Couldnt bind to address 0.0.0.0:0"))
-        };
+    fn data_recieved(&self, socket: Arc<UdpSocket>, running: Arc<AtomicBool>) -> Result<HACommand, String>{
+        let mut buf = [0; 1024]; // Adjust buffer size as needed
+        while running.load(Ordering::Relaxed) {
+            match socket.recv_from(&mut buf) {
+                Ok((size, _)) => {
+                    let received_bytes = &buf[..size];
 
-        let mut buffer = [0u8; 1024];
-        let size = match socket.recv_from(&mut buffer){
-            Ok((size, _)) => size,
-            Err(_) => return Err(String::from("Timed out")),
-        };
-        let received_bytes = &buffer[..size];
-        
-        println!("{:X?}", received_bytes);
-        
-        match self.process_rcvd_msg(&mut received_bytes.to_vec()){
-            Ok(res) => return Ok(res),
-            Err(_) => Err(String::from("Invalid data"))
+                    let response_command = self.process_rcvd_msg(&mut received_bytes.to_vec());
+
+                    match response_command{
+                        Ok(res) => {
+                            res.get_header_ref().get_source_mac_ref().display();
+                            return Ok(res);
+                        },
+                        Err(_) => return Err(String::from("Invalid data")),
+                    }
+                }
+                Err(_) =>  return Err(String::from("Invalid data")),
+            }
         }
+        return Err(String::from("Invalid data"));
     }
 
-    fn data_recieved_join(&self) -> Result<(), String>{
-        let socket = match UdpSocket::bind("0.0.0.0:0"){
-            Ok(sckt) => sckt,
-            Err(_) => return Err(String::from("Couldnt bind to address 0.0.0.0:0"))
-        };
-
+    fn data_recieved_join(&self, socket: Arc<UdpSocket>, running: Arc<AtomicBool>) -> Result<(), String>{
         let mut buffer = [0u8; 1024];
-        let (size, _) = match socket.recv_from(&mut buffer){
-            Ok((size, _)) => (size, _),
-            Err(_) => return Err(String::from("Timed out")),
-        };
+        while running.load(Ordering::Relaxed) {
+            match socket.recv_from(&mut buffer) {
+                Ok((size, _)) => {
+                    let received_bytes = &buffer[..size];
 
-        let received_bytes = &buffer[..size];
+                    match String::from_utf8(received_bytes.to_vec()){
+                        Ok(s) => println!("{}", s),
+                        Err(_) => {return Err(String::from("Invalid data"))}
+                    }
 
-        println!("{:X?}", received_bytes);
-
-        if received_bytes.len() == 17 && received_bytes[16] == 128 {
-            return Ok(());
+                    if received_bytes.len() == 17 && received_bytes[16] == 128 {
+                        return Ok(());
+                    }
+                }
+                Err(_) =>  return Err(String::from("Invalid data")),
+            }
         }
-
         return Err(String::from("Recieved messeage didnt meet the boundaries"));
     }
-    /*
-       static void DataReceivedJoin(IAsyncResult ar)
-   {
-      UdpClient c = (UdpClient)ar.AsyncState;
-      IPEndPoint receivedIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
-      Byte[] receivedBytes = c.EndReceive(ar, ref receivedIpEndPoint); 
-      c.BeginReceive(DataReceivedJoin, c);
-      Console.WriteLine(BitConverter.ToString(receivedBytes));    
-      HACommand responseCommand = new HACommand();
-		if (receivedBytes != null && receivedBytes.Length == 17 && receivedBytes[16] == 128)
-      {
-         Console.WriteLine("OK");
-         return;
-      }
-   }
-     */
-}
-fn main(){
 
+    fn data_recieved_scan(&mut self, socket: Arc<UdpSocket>, running: Arc<AtomicBool>) -> Result<(), String>{
+        let mut buffer = [0u8; 1024];
+        while running.load(Ordering::Relaxed) {
+            match socket.recv_from(&mut buffer) {
+                Ok((size, _)) => {
+                    let received_bytes = &buffer[..size];
+
+                    let mut res = HACommand::new();
+            
+                    res.set_bytes(&mut received_bytes.to_vec(), 6);
+            
+                    if res.get_join().is_none()  || 
+                        res.get_join().unwrap().get_scan_res().is_none() || 
+                        res.get_join().unwrap().get_scan_res().unwrap().get_wifis_ref().is_empty(){
+                        return Err(String::from("Data wasn't a scan response or no wifis were found"));
+                    }
+            
+                    'inner: for wifi in res.get_join().unwrap().get_scan_res().unwrap().get_wifis_ref(){
+                        let ssid = wifi.get_ssid_as_str().unwrap();
+                        if ssid.chars().nth(0) == Some('I') &&
+                            ssid.chars().nth(1) == Some('P') &&
+                            ssid.chars().nth(2) == Some('M') &&
+                            ssid.chars().nth(3) == Some('L') {
+                            self.ssid = wifi.get_ssid_ref().clone();
+                            self.security_type = *wifi.get_security_type_ref();
+                            self.encryption_type = *wifi.get_encryption_type_ref();
+                            
+                            print!("{}", ssid);
+                            break 'inner;
+                        }
+                    }
+
+                    return Ok(())
+                }
+                Err(_) =>  return Err(String::from("Invalid data")),
+            }
+        }       
+        return Err(String::from("Invalid data"))
+    }
+}
+
+fn data_recieved(runner: &Arc<Mutex<Runner>>, client: &Arc<UdpSocket>, running: &Arc<AtomicBool>, rep: &SocketAddr){
+    let command = runner.lock().unwrap().send_ping();
+    let data = command.get_bytes();
+
+    let client_clone = client.clone();
+    let running_clone = running.clone();
+    let runner_clone = Arc::clone(&runner);
+
+    let _ = thread::spawn(move || {
+        print!("Recieving");
+
+        runner_clone.lock().unwrap().data_recieved(client_clone, running_clone).unwrap();
+    });
+
+    client.send_to(&data, rep).unwrap();
+
+    thread::sleep(std::time::Duration::from_secs(2));
+}
+
+fn data_scan(runner: &Arc<Mutex<Runner>>, client: &Arc<UdpSocket>, running: &Arc<AtomicBool>, rep: &SocketAddr){
+    let command_scan = runner.lock().unwrap().send_join_scan();
+    let data_scan = command_scan.get_bytes();
+
+    let client_clone = client.clone();
+    let running_clone = running.clone();
+    let runner_clone = Arc::clone(&runner);
+
+    let _ = thread::spawn(move || {
+        print!("Scanning");
+
+        runner_clone.lock().unwrap().data_recieved_scan(client_clone, running_clone).unwrap();
+    });
+    
+    client.send_to(&data_scan, rep).unwrap();
+
+    thread::sleep(std::time::Duration::from_secs(15));
+}
+
+fn data_join(runner: &Arc<Mutex<Runner>>, client: &Arc<UdpSocket>, running: &Arc<AtomicBool>, rep: &SocketAddr){
+    let bytes2 = "j2LK98!we".as_bytes();
+
+    let command_join = runner.lock().unwrap().send_join_request(runner.lock().unwrap().ssid.clone(), runner.lock().unwrap().security_type, runner.lock().unwrap().encryption_type, bytes2.to_vec());
+
+    let data_join = command_join.get_bytes();
+
+    let client_clone = client.clone();
+    let running_clone = running.clone();
+    let runner_clone = Arc::clone(&runner);
+
+    let _ = thread::spawn(move || {
+        print!("Joining");
+
+        runner_clone.lock().unwrap().data_recieved_join(client_clone, running_clone).unwrap();
+    });
+
+    client.send_to(&data_join, rep).unwrap();
+
+    thread::sleep(std::time::Duration::from_secs(2));
+}
+
+fn data_custom(runner: &Arc<Mutex<Runner>>, client: &Arc<UdpSocket>, rep: &SocketAddr){
+    let custom_comm = runner.lock().unwrap().send_custom_comm(1);
+
+    let data_custom = custom_comm.get_bytes();
+
+    print!("Sending custom signal");
+
+    client.send_to(&data_custom, rep).unwrap();
+
+    thread::sleep(std::time::Duration::from_secs(2));
+}
+
+fn main(){
+    let runner = Arc::new(Mutex::new(Runner{
+        mac: MacAddress::new(vec![0, 0, 0, 0, 0, 0]).unwrap(),
+        ssid: Vec::new(),
+        security_type: 0,
+        encryption_type: 0
+    }));
+
+    let lep = SocketAddr::from(([0, 0, 0, 0], 20910));
+    let rep = SocketAddr::from(([10, 10, 100, 254], 20910));
+
+    let client = Arc::new(UdpSocket::bind(lep).unwrap());
+    let running = Arc::new(AtomicBool::new(true));
+
+    data_recieved(&runner, &client, &running, &rep);
+    data_scan(&runner, &client, &running, &rep);
+    
+    print!("{:?}", String::from_utf8(runner.lock().unwrap().ssid.clone()));
+    print!("{:?}", runner.lock().unwrap().security_type);
+    print!("{:?}", runner.lock().unwrap().encryption_type);
+
+    data_join(&runner, &client, &running, &rep);
+
+    data_custom(&runner, &client, &rep);
 }
