@@ -1,7 +1,11 @@
+import pickle
 from threading import Thread
 from concurrent.futures import ThreadPoolExecutor
 import time
 import socket
+import os
+import sys
+sys.path.append(os.path.dirname(__file__) + "/..")
 
 from bin.runner import Runner
 from lib.classes.addresses.mac import MacAddress
@@ -16,7 +20,8 @@ def data_received(runner, client, rep):
 
     Thread(target=thread_func).start()
 
-    client.sendto(data, rep)
+    serialized_data = pickle.dumps(data)
+    client.sendto(serialized_data, rep)
 
     time.sleep(2)
 
@@ -30,7 +35,9 @@ def data_scan(runner, client, rep):
 
     Thread(target=thread_func).start()
 
-    client.sendto(data_scan, rep)
+    serialized_data = pickle.dumps(data_scan)
+    client.sendto(serialized_data, rep)
+
     time.sleep(15)
 
 def data_join(runner, client, rep):
@@ -46,7 +53,9 @@ def data_join(runner, client, rep):
 
     Thread(target=thread_func).start()
 
-    client.sendto(data_join, rep)
+    serialized_data = pickle.dumps(data_join)
+    client.sendto(serialized_data, rep)
+
     time.sleep(2)
 
 def data_custom(runner, client, rep):
@@ -56,7 +65,9 @@ def data_custom(runner, client, rep):
 
     print("Sending custom signal")
 
-    client.sendto(data_custom, rep)
+    serialized_data = pickle.dumps(data_custom)
+    client.sendto(serialized_data, rep)
+
     time.sleep(2)
 
 def main():
@@ -73,14 +84,9 @@ def main():
     client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     client.bind(lep)
 
-    with ThreadPoolExecutor() as executor:
-        executor.submit(data_received, runner, client, rep)
-        executor.submit(data_scan, runner, client, rep)
-        executor.submit(data_join, runner, client, rep)
-        executor.submit(data_custom, runner, client, rep)
-
-    print(runner.ssid)
-    print(runner.security_type)
-    print(runner.encryption_type)
+    data_scan(runner, client, rep)
+    data_received(runner, client, rep)
+    data_join(runner, client, rep)
+    data_custom(runner, client, rep)
 
 main()

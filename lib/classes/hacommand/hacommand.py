@@ -1,10 +1,14 @@
-from header import Header
-from join import Join
-from ping import Ping
-from status import Status
-from set_mode import SetMode
-from hvac_comm import HVACComm
-from custom_comm import CustomComm
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from lib.classes.hacommand.header import Header
+from lib.classes.join.join import Join
+from lib.classes.hacommand.ping import Ping
+from lib.classes.status.status import Status
+from lib.classes.hacommand.set_mode import SetMode
+from lib.classes.hacommand.hvac_comm import HVACComm
+from lib.classes.hacommand.custom_comm import CustomComm
 
 class HACommand:
     def __init__(self):
@@ -66,11 +70,11 @@ class HACommand:
 
             self.custom_command.set_bytes(data, 0)
 
-    def get_header_ref(self):
+    def get_header(self):
         return self.header
 
-    def get_header_mut(self):
-        return self.header
+    def set_header(self, header):
+        self.header = header
 
     def get_join(self):
         return self.join

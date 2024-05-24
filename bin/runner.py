@@ -1,10 +1,16 @@
-import socket
 from typing import Tuple
+import socket
+import random
+import os
+import sys
+
+from lib.classes.join.join_req import JoinReq
+sys.path.append(os.path.dirname(__file__) + "/..")
+
 from lib.classes.addresses.mac import MacAddress
 from lib.classes.hacommand.hacommand import HACommand
-import random
-
 from lib.classes.join.join import Join
+
 
 
 class Runner:
@@ -65,7 +71,7 @@ class Runner:
 
         join = Join()
 
-        join.set_join_req(ssid, security_type, encryption_type, key)
+        join.set_join_req(JoinReq(ssid, security_type, encryption_type, key))
 
         join.set_sub_command(3)
 
@@ -101,10 +107,12 @@ class Runner:
         return res
 
     def data_received(self, socket: socket.socket) -> Tuple[HACommand, str]:
-        buf = bytearray(1024)  # Adjust buffer size as needed
+        buf = bytearray(1024) 
         while True:
             try:
                 size, _ = socket.recvfrom_into(buf)
+                print(size)
+                print("Recieved data")
                 received_bytes = buf[:size]
                 response_command = self.process_rcvd_msg(received_bytes)
                 if response_command:
@@ -158,49 +166,14 @@ class Runner:
                         self.ssid = wifi.get_ssid()
                         self.security_type = wifi.get_security_type()
                         self.encryption_type = wifi.get_encryption_type()
-                        print(ssid)
+                        
+                        self.display()
+
                         return None, None
             except Exception as e:
                 return None, str(e)
-"""
-impl Runner{    
-    fn data_recieved_scan(&mut self, socket: Arc<UdpSocket>, running: Arc<AtomicBool>) -> Result<(), String>{
-        let mut buffer = [0u8; 1024];
-        while running.load(Ordering::Relaxed) {
-            match socket.recv_from(&mut buffer) {
-                Ok((size, _)) => {
-                    let received_bytes = &buffer[..size];
-
-                    let mut res = HACommand::new();
             
-                    res.set_bytes(&mut received_bytes.to_vec(), 6);
-            
-                    if res.get_join().is_none()  || 
-                        res.get_join().unwrap().get_scan_res().is_none() || 
-                        res.get_join().unwrap().get_scan_res().unwrap().get_wifis_ref().is_empty(){
-                        return Err(String::from("Data wasn't a scan response or no wifis were found"));
-                    }
-            
-                    'inner: for wifi in res.get_join().unwrap().get_scan_res().unwrap().get_wifis_ref(){
-                        let ssid = wifi.get_ssid_as_str().unwrap();
-                        if ssid.chars().nth(0) == Some('I') &&
-                            ssid.chars().nth(1) == Some('P') &&
-                            ssid.chars().nth(2) == Some('M') &&
-                            ssid.chars().nth(3) == Some('L') {
-                            self.ssid = wifi.get_ssid_ref().clone();
-                            self.security_type = *wifi.get_security_type_ref();
-                            self.encryption_type = *wifi.get_encryption_type_ref();
-                            
-                            print!("{}", ssid);
-                            break 'inner;
-                        }
-                    }
-
-                    return Ok(())
-                }
-                Err(_) =>  return Err(String::from("Invalid data")),
-            }
-        }       
-        return Err(String::from("Invalid data"))
-    }
-}"""
+    def display(self):
+        print(self.ssid)
+        print(self.security_type)
+        print(self.encryption_type)

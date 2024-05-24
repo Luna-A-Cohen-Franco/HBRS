@@ -1306,7 +1306,7 @@ class MainClass
    public static void Main()
    {
       /*CONECTAR A WIFI*/
-	  /*
+	  
       IPEndPoint lep = new IPEndPoint(IPAddress.Any, 20910);    
       IPEndPoint rep = new IPEndPoint(IPAddress.Parse("10.10.100.254"), 20910);
       

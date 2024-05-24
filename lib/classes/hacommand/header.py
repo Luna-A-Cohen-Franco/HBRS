@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from lib.classes.addresses.mac import MacAddress
 from lib.consts.other import Other
 
@@ -5,13 +9,13 @@ from lib.consts.other import Other
 class Header:
     def __init__(self):
         self.protocol_version = 0
-        self.source_mac = MacAddress()
-        self.destination_mac = MacAddress()
+        self.source_mac = MacAddress.new_empty()
+        self.destination_mac = MacAddress.new_empty()
         self.sequence_number = 0
         self.source_endpoint = 0
         self.destination_endpoint = 0
         self.command_id = 0
-        self.mac_of_last_response = MacAddress()
+        self.mac_of_last_response = MacAddress.new_empty()
 
     def get_bytes(self):
         bytes = []
@@ -77,6 +81,12 @@ class Header:
         self.command_id = 0
         self.mac_of_last_response = MacAddress.new_empty()
 
+    def get_id(self):
+        return self.command_id
+    
+    def set_id(self, command_id):
+        self.command_id = command_id
+        
     def get_protocol_version(self):
         return self.protocol_version
 
