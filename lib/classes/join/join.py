@@ -17,7 +17,7 @@ class Join:
             return data + self.cloud_notif_ip.get_bytes()
 
         if self.sub_command == 3 and self.join_req is not None:
-            return data + self.join_req.get_bytes()
+            return bytes(data) + self.join_req.get_bytes()
 
         return data
 

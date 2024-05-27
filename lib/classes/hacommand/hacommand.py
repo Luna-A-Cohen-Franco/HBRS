@@ -1,5 +1,7 @@
 import os
 import sys
+
+from lib.utils.byte_arrays_helper import ByteArraysHelper
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from lib.classes.hacommand.header import Header
@@ -30,24 +32,22 @@ class HACommand:
         self.set_auto_off = None
     
     def get_bytes(self):
-        if self.header.command_id in [1, 2, 34, 40, 41, 164, 228]:
+        if self.header.command_id in [1, 2, 34, 40, 41, 164, 175, 228]:
             return self.header.get_bytes()
         elif self.header.command_id == 3:
-            return [self.dim_cmd.get_byte()]
+            return ByteArraysHelper.combine_1v_1b(self.header.get_bytes(), self.dim_cmd.get_byte())
         elif self.header.command_id == 97:
-            return self.hvac_set_mode.get_bytes()
+            return ByteArraysHelper.combine_1v_1b(self.header.get_bytes(), self.hvac_set_mode.get_byte())
         elif self.header.command_id == 98:
-            return [self.hvac_command.get_byte()]
+            return ByteArraysHelper.combine_1v_1b(self.header.get_bytes(), self.hvac_command.get_byte())
         elif self.header.command_id == 161:
-            return self.join.get_bytes()
+            return ByteArraysHelper.combine_2v(self.header.get_bytes(), self.join.get_bytes())
         elif self.header.command_id == 162:
-            return self.custom_command.get_bytes()
-        elif self.header.command_id == 175:
-            return self.header.get_bytes()
+            return ByteArraysHelper.combine_2v(self.header.get_bytes(), self.custom_command.get_bytes())
         elif self.header.command_id == 178:
-            return self.set_auto_off.get_bytes()
+            return ByteArraysHelper.combine_2v(self.header.get_bytes(), self.set_auto_off.get_bytes())
         elif self.header.command_id == 224:
-            return self.ping.get_bytes()
+            return ByteArraysHelper.combine_2v(self.header.get_bytes(), self.ping.get_bytes())
         else:
             return []
 

@@ -16,12 +16,16 @@ class ByteArraysHelper:
         return data.ljust(strict_length, b'\0')
 
     @staticmethod
-    def combine_2v(first: bytes, second: bytes) -> bytes:
-        return first + second
+    def combine_2v(first: List[int], second: List[int]) -> bytes:
+        return bytes(first) + bytes(second)
 
     @staticmethod
     def combine_1v_1b(first: List[int], second: int) -> bytes:
         return bytes(first) + bytes([second])
+    
+    def combine_1b_1v(first: int, second: List[int]) -> bytes:
+        return bytes([first]) + bytes(second)
+     
     @staticmethod
     def combine_2b(first: int, second: int) -> bytes:
         return bytes([first, second])

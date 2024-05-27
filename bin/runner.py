@@ -12,8 +12,6 @@ from lib.classes.addresses.mac import MacAddress
 from lib.classes.hacommand.hacommand import HACommand
 from lib.classes.join.join import Join
 
-
-
 class Runner:
     def __init__(self, mac: str, ssid: str, security_type: int, encryption_type: int):
         self.mac = mac
@@ -36,7 +34,6 @@ class Runner:
         comm.get_header().set_id(224)
 
         comm.ping = Ping();  
-        print(comm.get_header().get_protocol_version())
 
         return comm
         

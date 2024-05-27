@@ -7,7 +7,7 @@ class Ping:
         self.data = [65]
 
     def get_bytes(self):
-        return ByteArraysHelper.combine_1v_1b(self.data, self.length)
+        return ByteArraysHelper.combine_1b_1v(self.length, self.data)
 
     def set_bytes(self, data):
         self.length = 1

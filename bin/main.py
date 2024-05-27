@@ -39,7 +39,7 @@ def data_scan(runner, client, rep):
     serialized_data = pickle.dumps(data_scan)
     client.sendto(serialized_data, rep)
 
-    time.sleep(15)
+    #time.sleep(15)
 
 def data_join(runner, client, rep):
     bytes2 = "j2LK98!we".encode()

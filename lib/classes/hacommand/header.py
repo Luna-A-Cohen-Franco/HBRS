@@ -18,36 +18,53 @@ class Header:
         self.mac_of_last_response = MacAddress.new_empty()
 
     def get_bytes(self):
-        bytes = []
-        for _ in range(Other.HeaderOffset):
-            bytes.append(0)
+        data = [self.protocol_version]
 
-        index = 0
+        source_mac_bytes = self.source_mac.get_bytes()
+        for b in source_mac_bytes:
+            data.append(b)
 
-        bytes[index] = self.protocol_version
-        index += 1
+        destination_mac_bytes = self.destination_mac.get_bytes()
+        for b in destination_mac_bytes:
+            data.append(b)
 
-        for byte in self.source_mac.get_bytes_ref():
-            bytes[index] = byte
-            index += 1
+        data.append(self.sequence_number)
+        data.append(self.source_endpoint)
+        data.append(self.destination_endpoint)
+        data.append(self.command_id)
 
-        index = 7
-
-        for byte in self.destination_mac.get_bytes_ref():
-            bytes[index] = byte
-            index += 1
-
-        index = 13
-        bytes[index] = self.sequence_number
-        index += 1
-        bytes[index] = self.source_endpoint
-        index += 1
-        bytes[index] = self.destination_endpoint
-        index += 1
-        bytes[index] = self.command_id
-
-        return bytes
-
+        return data
+    """
+    public byte[] GetBytes()
+	{
+		byte[] array = new byte[HeaderOffset];
+		int num = 0;
+		array[num] = ProtocolVersion;
+		num++;
+		byte[] sourceMAC = SourceMAC;
+		foreach (byte b in sourceMAC)
+		{
+			array[num] = b;
+			num++;
+		}
+		num = 7;
+		sourceMAC = DestinationMAC;
+		foreach (byte b2 in sourceMAC)
+		{
+			array[num] = b2;
+			num++;
+		}
+		num = 13;
+		array[num] = SequenceNumber;
+		num++;
+		array[num] = SourceEndpoint;
+		num++;
+		array[num] = DestinationEndpoint;
+		num++;
+		array[num] = CommandID;
+		return array;
+	}
+    """
     def set_bytes(self, data):
         index = 0
 
