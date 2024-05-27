@@ -28,25 +28,25 @@ class HACommand:
         self.ping = None
         self.custom_command = None
         self.set_auto_off = None
-
+    
     def get_bytes(self):
-        if self.header.protocol_version in [1, 2, 34, 40, 41, 164, 228]:
+        if self.header.command_id in [1, 2, 34, 40, 41, 164, 228]:
             return self.header.get_bytes()
-        elif self.header.protocol_version == 3:
+        elif self.header.command_id == 3:
             return [self.dim_cmd.get_byte()]
-        elif self.header.protocol_version == 97:
+        elif self.header.command_id == 97:
             return self.hvac_set_mode.get_bytes()
-        elif self.header.protocol_version == 98:
+        elif self.header.command_id == 98:
             return [self.hvac_command.get_byte()]
-        elif self.header.protocol_version == 161:
+        elif self.header.command_id == 161:
             return self.join.get_bytes()
-        elif self.header.protocol_version == 162:
+        elif self.header.command_id == 162:
             return self.custom_command.get_bytes()
-        elif self.header.protocol_version == 175:
+        elif self.header.command_id == 175:
             return self.header.get_bytes()
-        elif self.header.protocol_version == 178:
+        elif self.header.command_id == 178:
             return self.set_auto_off.get_bytes()
-        elif self.header.protocol_version == 224:
+        elif self.header.command_id == 224:
             return self.ping.get_bytes()
         else:
             return []
@@ -54,17 +54,17 @@ class HACommand:
     def set_bytes(self, data, subcomm_wait_res):
         self.header.set_bytes(data)
 
-        if self.header.protocol_version == 161:
+        if self.header.command_id == 161:
             if self.join is None:
                 self.join = Join()
 
             self.join.set_bytes(data, 0, subcomm_wait_res)
-        elif self.header.protocol_version == 253:
+        elif self.header.command_id == 253:
             if self.status is None:
                 self.status = Status()
 
             self.status.set_bytes(data, 0)
-        elif self.header.protocol_version == 162:
+        elif self.header.command_id == 162:
             if self.custom_command is None:
                 self.custom_command = CustomComm()
 
@@ -119,4 +119,5 @@ class HACommand:
         self.dim_cmd = dim_cmd
 
     def get_set_auto_off(self):
-        return self.set_auto_off
+        return self.set_auto_off   
+    

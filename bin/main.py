@@ -13,6 +13,7 @@ from lib.classes.addresses.mac import MacAddress
 def data_received(runner, client, rep):
     command = runner.send_ping()
     data = command.get_bytes()
+    print(data)
 
     def thread_func():
         print("Receiving")
@@ -82,10 +83,11 @@ def main():
     rep = ('10.10.100.254', 20910)
 
     client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  
     client.bind(lep)
 
-    data_scan(runner, client, rep)
     data_received(runner, client, rep)
+    data_scan(runner, client, rep)
     data_join(runner, client, rep)
     data_custom(runner, client, rep)
 

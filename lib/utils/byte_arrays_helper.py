@@ -1,3 +1,4 @@
+from typing import List
 from lib.consts.errors import HbrsError
 
 
@@ -19,9 +20,8 @@ class ByteArraysHelper:
         return first + second
 
     @staticmethod
-    def combine_1v_1b(first: bytes, second: int) -> bytes:
-        return first + bytes([second])
-
+    def combine_1v_1b(first: List[int], second: int) -> bytes:
+        return bytes(first) + bytes([second])
     @staticmethod
     def combine_2b(first: int, second: int) -> bytes:
         return bytes([first, second])

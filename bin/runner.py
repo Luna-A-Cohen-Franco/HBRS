@@ -4,6 +4,7 @@ import random
 import os
 import sys
 
+from lib.classes.hacommand.ping import Ping
 from lib.classes.join.join_req import JoinReq
 sys.path.append(os.path.dirname(__file__) + "/..")
 
@@ -33,6 +34,9 @@ class Runner:
         comm.get_header().set_source_endpoint(0)
         comm.get_header().set_destination_endpoint(0)
         comm.get_header().set_id(224)
+
+        comm.ping = Ping();  
+        print(comm.get_header().get_protocol_version())
 
         return comm
         
@@ -93,7 +97,7 @@ class Runner:
         comm.get_header().set_source_endpoint(0)
         comm.get_header().set_destination_endpoint(dest_endpoint)
         comm.get_header().set_id(2)
-
+              
         return comm
 
     def process_rcvd_msg(self, data: list):
