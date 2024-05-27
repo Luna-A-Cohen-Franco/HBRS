@@ -6,6 +6,7 @@ import sys
 
 from lib.classes.hacommand.ping import Ping
 from lib.classes.join.join_req import JoinReq
+from lib.consts.other import Other
 sys.path.append(os.path.dirname(__file__) + "/..")
 
 from lib.classes.addresses.mac import MacAddress
@@ -41,7 +42,7 @@ class Runner:
         comm = HACommand()
         comm.get_header().set_protocol_version(0)
         comm.get_header().set_source_mac(MacAddress([0, 0, 0, 0, 0, 0]))
-        comm.get_header().set_destination_mac(MacAddress(self.mac))
+        comm.get_header().set_destination_mac(self.mac)
 
         rng = random.SystemRandom()
         next_sqnc_num = rng.randint(0, 255)
@@ -52,7 +53,7 @@ class Runner:
         comm.get_header().set_id(161)
 
         comm.set_join(Join())
-
+        comm.join.sub_command = 5
         return comm
 
     def send_join_request(self, ssid: str, security_type: int, encryption_type: int, key: str):
@@ -100,25 +101,22 @@ class Runner:
     def process_rcvd_msg(self, data: list):
         res = HACommand()
 
-        if not data:
-            return "Data is empty"
-
         res.set_bytes(data, 0)
 
         return res
 
-    def data_received(self, socket: socket.socket) -> Tuple[HACommand, str]:
+    def data_received(self, socket: socket.socket) -> Tuple[MacAddress, str]:
         buf = bytearray(1024) 
         while True:
             try:
                 size, _ = socket.recvfrom_into(buf)
-                print(size)
                 print("Recieved data")
                 received_bytes = buf[:size]
-                response_command = self.process_rcvd_msg(received_bytes)
-                if response_command:
-                    response_command.get_header().get_source_mac().display()
-                    return response_command, None
+                res = self.process_rcvd_msg(received_bytes)
+
+                if res:
+                    res.get_header().get_source_mac().display()
+                    return res.get_header().get_source_mac(), None
                 else:
                     return None, "Invalid data"
             except Exception as e:
@@ -149,28 +147,31 @@ class Runner:
         while True:
             try:
                 size, _ = socket.recvfrom_into(buffer)
+                print("Recieved data")
                 received_bytes = buffer[:size]
-
+                print(received_bytes)
+                print(received_bytes[17 + 1:])
                 res = HACommand()
                 res.set_bytes(received_bytes, 6)
-
+                """
                 if (
                     res.get_join() is None
                     or res.get_join().get_scan_res() is None
                     or not res.get_join().get_scan_res().get_wifis()
                 ):
-                    return None, "Data wasn't a scan response or no wifis were found"
-
+                    return None, "Data wasn't a scan response or no wifis were found
+                """
+                
                 for wifi in res.get_join().get_scan_res().get_wifis():
-                    ssid = wifi.get_ssid_as_str()
-                    if ssid and ssid.startswith("IPML"):
-                        self.ssid = wifi.get_ssid()
-                        self.security_type = wifi.get_security_type()
-                        self.encryption_type = wifi.get_encryption_type()
-                        
-                        self.display()
+                    wifi.display()
+                    print(wifi.get_ssid_as_str())
+                    self.ssid = wifi.ssid
+                    self.security_type = wifi.get_security_type()
+                    self.encryption_type = wifi.get_encryption_type()
+                    
+                    self.display()
 
-                        return None, None
+                    return None, None
             except Exception as e:
                 return None, str(e)
             

@@ -5,6 +5,9 @@ class MacAddress:
     def get_bytes(self):
         return self.bytes
     
+    def set_bytes(self, bytes: list[int]):
+        self.bytes = bytes
+
     @staticmethod
     def from_string(addr: str):
         if len(addr) != 12:

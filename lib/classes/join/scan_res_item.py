@@ -1,12 +1,23 @@
 class ScanResItem:
     def __init__(self, data, header_offset):
-        self.ssid = data[header_offset:header_offset+ 32]
+        self.ssid = bytearray(33)
+        for i in range(33):
+            self.ssid[i] = 0
+
+        self.ssid[:32] = data[header_offset:header_offset+32]
+        self.ssid = [byte for byte in self.ssid]
         self.security_type = data[header_offset + 33]
         self.encryption_type = data[header_offset + 34]
         self.rssi = data[header_offset + 35]
 
+    def display(self):
+        print(self.ssid)
+        print(self.security_type)
+        print(self.encryption_type)
+        print(self.rssi)
+
     def get_ssid_as_str(self):
-        return self.ssid.decode('utf-8')
+        return list(self.ssid).decode('utf-8')
 
     def get_bytes(self):
         return self.ssid + bytes([self.security_type, self.encryption_type, self.rssi])

@@ -34,10 +34,9 @@ class Join:
         if sub_comm_res == 6:
             if self.scan_res is None:
                 self.scan_res = ScanRes()
-                self.scan_res.add_new_item(data, header_offset + 1)
-                return True
 
             self.scan_res.add_new_item(data, header_offset + 1)
+
             return True
 
         return False

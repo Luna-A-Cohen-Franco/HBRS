@@ -1,6 +1,7 @@
 import os
 import sys
 
+from lib.consts.other import Other
 from lib.utils.byte_arrays_helper import ByteArraysHelper
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -58,7 +59,7 @@ class HACommand:
             if self.join is None:
                 self.join = Join()
 
-            self.join.set_bytes(data, 0, subcomm_wait_res)
+            self.join.set_bytes(data, Other.HeaderOffset, subcomm_wait_res)
         elif self.header.command_id == 253:
             if self.status is None:
                 self.status = Status()

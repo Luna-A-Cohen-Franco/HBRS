@@ -12,19 +12,18 @@ from lib.classes.addresses.mac import MacAddress
 
 def data_received(runner, client, rep):
     command = runner.send_ping()
-    data = command.get_bytes()
-    print(data)
+    ping = command.get_bytes()
 
     def thread_func():
         print("Receiving")
-        runner.data_received(client)
+        (mac, _) = runner.data_received(client)
+        runner.mac = mac
 
     Thread(target=thread_func).start()
 
-    serialized_data = pickle.dumps(data)
-    client.sendto(serialized_data, rep)
+    client.sendto(ping, rep)
 
-    time.sleep(2)
+    time.sleep(5)
 
 def data_scan(runner, client, rep):
     command_scan = runner.send_join_scan()
@@ -36,10 +35,9 @@ def data_scan(runner, client, rep):
 
     Thread(target=thread_func).start()
 
-    serialized_data = pickle.dumps(data_scan)
-    client.sendto(serialized_data, rep)
+    client.sendto(data_scan, rep)
 
-    #time.sleep(15)
+    time.sleep(15)
 
 def data_join(runner, client, rep):
     bytes2 = "j2LK98!we".encode()
@@ -54,8 +52,7 @@ def data_join(runner, client, rep):
 
     Thread(target=thread_func).start()
 
-    serialized_data = pickle.dumps(data_join)
-    client.sendto(serialized_data, rep)
+    client.sendto(data_join, rep)
 
     time.sleep(2)
 
@@ -66,8 +63,7 @@ def data_custom(runner, client, rep):
 
     print("Sending custom signal")
 
-    serialized_data = pickle.dumps(data_custom)
-    client.sendto(serialized_data, rep)
+    client.sendto(data_custom, rep)
 
     time.sleep(2)
 
@@ -88,7 +84,7 @@ def main():
 
     data_received(runner, client, rep)
     data_scan(runner, client, rep)
-    data_join(runner, client, rep)
-    data_custom(runner, client, rep)
+    #data_join(runner, client, rep)
+    #data_custom(runner, client, rep)
 
 main()
