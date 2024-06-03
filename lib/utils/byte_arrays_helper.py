@@ -10,10 +10,11 @@ class ByteArraysHelper:
 
     @staticmethod
     def cp_arr_bytes_fill(data: bytes, strict_length: int) -> bytes:
-        if len(data) < strict_length:
-            raise HbrsError.DataLengthExceedsLimit
-
-        return data.ljust(strict_length, b'\0')
+        array = bytearray(strict_length)
+    
+        array[:len(data)] = data[:strict_length]
+    
+        return array
 
     @staticmethod
     def combine_2v(first: List[int], second: List[int]) -> bytes:

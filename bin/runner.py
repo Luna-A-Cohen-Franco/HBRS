@@ -4,6 +4,8 @@ import random
 import os
 import sys
 
+from scapy.all import *
+
 from lib.classes.hacommand.ping import Ping
 from lib.classes.join.join_req import JoinReq
 from lib.consts.other import Other
@@ -61,7 +63,7 @@ class Runner:
 
         comm.get_header().set_protocol_version(0)
         comm.get_header().set_source_mac(MacAddress([0, 0, 0, 0, 0, 0]))
-        comm.get_header().set_destination_mac(MacAddress(self.mac))
+        comm.get_header().set_destination_mac(self.mac)
 
         rng = random.SystemRandom()
         next_sqnc_num = rng.randint(0, 255)
@@ -73,7 +75,7 @@ class Runner:
 
         join = Join()
 
-        join.set_join_req(JoinReq(ssid, security_type, encryption_type, key))
+        join.set_join_req(JoinReq.new(ssid, security_type, encryption_type, key))
 
         join.set_sub_command(3)
 
@@ -110,7 +112,7 @@ class Runner:
         while True:
             try:
                 size, _ = socket.recvfrom_into(buf)
-                print("Recieved data")
+                print("Recieved ARP data")
                 received_bytes = buf[:size]
                 res = self.process_rcvd_msg(received_bytes)
 
@@ -128,19 +130,20 @@ class Runner:
         while True:
             try:
                 size, _ = socket.recvfrom_into(buffer)
+                print("Received join bytes")
                 received_bytes = buffer[:size]
+                print(received_bytes)
 
-                try:
-                    received_str = received_bytes.decode('utf-8')
-                    print(received_str)
-                except UnicodeDecodeError:
+                
+                if len(received_bytes) == 17 and received_bytes[16] == 128:
+                    print("OK")
+                    return None, None
+                else:
                     return None, "Invalid data"
 
-                if len(received_bytes) == 17 and received_bytes[16] == 128:
-                    return None, None
             except Exception as e:
                 return None, str(e)
-
+    
     def data_received_scan(self, socket: socket.socket) -> Tuple[None, str]:
         buffer = bytearray(1024)
         
@@ -148,7 +151,7 @@ class Runner:
             try:
                 size, _ = socket.recvfrom_into(buffer)
                 received_bytes = buffer[:size]
-                print("Recieved data")
+                print("Recieved scan data")
                 #print(received_bytes)
 
                 res = HACommand()
@@ -162,18 +165,37 @@ class Runner:
                     return None, "Data wasn't a scan response or no wifis were found"
                 
                 for wifi in res.get_join().get_scan_res().get_wifis():
+                    print("WIFI: ")
                     wifi.display()
-                    if wifi.get_ssid_as_str().startswith("IPM"):
+                    if wifi.get_ssid_as_str().startswith("IPML"):
                         self.ssid = wifi.ssid
                         self.security_type = wifi.get_security_type()
                         self.encryption_type = wifi.get_encryption_type()
                         
+                        print("Selected WIFI:")
                         self.display()
                         
                         return None, None
             except Exception as e:
                 return None, str(e)
-            
+    
+    def find_new_ip(self, socket: socket.socket):
+        while True:
+            data, addr = socket.recvfrom(1024)
+            print("Recieved new IP data")
+            print("Received message:", data, "from", addr)
+            sender_ip = addr[0]
+                    
+            sender_mac = get_mac_address(sender_ip)
+            print("MAC address of sender:", sender_mac)
+
+def get_mac_address(ip):
+    ans, _ = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=ip), timeout=2, verbose=False)
+    
+    # Extract MAC address from response
+    for _, rcv in ans:
+        return rcv[Ether].src
+
     def display(self):
         print(''.join(chr(byte) for byte in self.ssid))
         print(self.security_type)

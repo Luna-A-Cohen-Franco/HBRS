@@ -11,7 +11,7 @@ class JoinReq:
 
     @staticmethod
     def new(ssid: list[int], security_type: int, encryption_type: int, key: list[int]):
-        key = ByteArraysHelper.cp_arr_bytes_fill(key, Other.KeyLength)
+        key = ByteArraysHelper.cp_arr_bytes_fill(key, Other.KeyLength.value)
         return JoinReq(ssid, security_type, encryption_type, key)
 
     def get_bytes(self) -> list[int]:

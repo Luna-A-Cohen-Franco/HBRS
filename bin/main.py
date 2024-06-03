@@ -39,15 +39,15 @@ def data_scan(runner, client, rep):
 
     time.sleep(15)
 
-def data_join(runner, client, rep):
-    bytes2 = "j2LK98!we".encode()
-
-    command_join = runner.send_join_request(runner.ssid, runner.security_type, runner.encryption_type, bytes2)
+def data_join(runner, client, rep, key):
+    command_join = runner.send_join_request(runner.ssid, runner.security_type, runner.encryption_type, key)
 
     data_join = command_join.get_bytes()
 
+    print(list(data_join))
     def thread_func():
         print("Joining")
+        time.sleep(5)
         runner.data_received_join(client)
 
     Thread(target=thread_func).start()
@@ -67,6 +67,9 @@ def data_custom(runner, client, rep):
 
     time.sleep(2)
 
+def find_new_ip(runner, client):
+    runner.find_new_ip(client)
+
 def main():
     runner = Runner(
         mac=MacAddress([0, 0, 0, 0, 0, 0]),
@@ -75,6 +78,11 @@ def main():
         encryption_type=0
     )
 
+    nipep = ('0.0.0.0', 20911)
+    nipclient = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    nipclient.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  
+    nipclient.bind(nipep)
+    find_new_ip(runner, nipclient)
     lep = ('0.0.0.0', 20910)
     rep = ('10.10.100.254', 20910)
 
@@ -84,7 +92,10 @@ def main():
 
     data_received(runner, client, rep)
     data_scan(runner, client, rep)
-    #data_join(runner, client, rep)
+
+    key = "j2LK98!we".encode()
+    data_join(runner, client, rep, key)
+
     #data_custom(runner, client, rep)
 
 main()
