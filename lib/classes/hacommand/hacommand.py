@@ -54,12 +54,10 @@ class HACommand:
 
     def set_bytes(self, data, subcomm_wait_res):
         self.header.set_bytes(data)
-
         if self.header.command_id == 161:
-            if self.join is None:
-                self.join = Join()
+            self.join = Join()
 
-            self.join.set_bytes(data, Other.HeaderOffset, subcomm_wait_res)
+            self.join.set_bytes(data, Other.HeaderOffset.value + 1, subcomm_wait_res)
         elif self.header.command_id == 253:
             if self.status is None:
                 self.status = Status()

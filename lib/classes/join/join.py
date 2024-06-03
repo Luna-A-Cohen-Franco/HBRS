@@ -21,7 +21,7 @@ class Join:
 
         return data
 
-    def set_bytes(self, data, header_offset, sub_comm_res):
+    def set_bytes(self, data, header_offset, sub_comm_res):        
         if sub_comm_res == 2:
             if self.enum_res is None:
                 self.enum_res = EnumRes()
@@ -32,11 +32,9 @@ class Join:
             return True
 
         if sub_comm_res == 6:
-            if self.scan_res is None:
-                self.scan_res = ScanRes()
-
-            self.scan_res.add_new_item(data, header_offset + 1)
-
+            self.scan_res = ScanRes()
+            
+            self.scan_res.add_new_item(data, header_offset)
             return True
 
         return False

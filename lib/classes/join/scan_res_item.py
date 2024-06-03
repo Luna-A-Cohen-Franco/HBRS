@@ -11,13 +11,13 @@ class ScanResItem:
         self.rssi = data[header_offset + 35]
 
     def display(self):
-        print(self.ssid)
+        print(self.get_ssid_as_str())
         print(self.security_type)
         print(self.encryption_type)
         print(self.rssi)
 
     def get_ssid_as_str(self):
-        return list(self.ssid).decode('utf-8')
+        return ''.join(chr(byte) for byte in self.ssid)
 
     def get_bytes(self):
         return self.ssid + bytes([self.security_type, self.encryption_type, self.rssi])

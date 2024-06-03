@@ -147,35 +147,34 @@ class Runner:
         while True:
             try:
                 size, _ = socket.recvfrom_into(buffer)
-                print("Recieved data")
                 received_bytes = buffer[:size]
-                print(received_bytes)
-                print(received_bytes[17 + 1:])
+                print("Recieved data")
+                #print(received_bytes)
+
                 res = HACommand()
                 res.set_bytes(received_bytes, 6)
-                """
+                
                 if (
                     res.get_join() is None
                     or res.get_join().get_scan_res() is None
                     or not res.get_join().get_scan_res().get_wifis()
                 ):
-                    return None, "Data wasn't a scan response or no wifis were found
-                """
+                    return None, "Data wasn't a scan response or no wifis were found"
                 
                 for wifi in res.get_join().get_scan_res().get_wifis():
                     wifi.display()
-                    print(wifi.get_ssid_as_str())
-                    self.ssid = wifi.ssid
-                    self.security_type = wifi.get_security_type()
-                    self.encryption_type = wifi.get_encryption_type()
-                    
-                    self.display()
-
-                    return None, None
+                    if wifi.get_ssid_as_str().startswith("IPM"):
+                        self.ssid = wifi.ssid
+                        self.security_type = wifi.get_security_type()
+                        self.encryption_type = wifi.get_encryption_type()
+                        
+                        self.display()
+                        
+                        return None, None
             except Exception as e:
                 return None, str(e)
             
     def display(self):
-        print(self.ssid)
+        print(''.join(chr(byte) for byte in self.ssid))
         print(self.security_type)
         print(self.encryption_type)

@@ -9,7 +9,7 @@ class ScanRes:
     def add_new_item(self, data, header_offset):
         new_item = ScanResItem(data, header_offset)
         self.wifis.append(new_item)
-        """"
+        """
         if new_item.get_ssid() == b'\x00' * 32 or new_item.get_ssid().decode('utf-8').strip() == '' or new_item.get_rssi() <= 0:
             raise HbrsError.BadSSID
 
@@ -21,6 +21,7 @@ class ScanRes:
             self.wifis.append(new_item)
         return True
         """
+        
         
     def get_bytes(self):
         bytes = b''
