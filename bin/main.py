@@ -1,4 +1,3 @@
-import pickle
 from threading import Thread
 from concurrent.futures import ThreadPoolExecutor
 import time
@@ -78,11 +77,6 @@ def main():
         encryption_type=0
     )
 
-    nipep = ('0.0.0.0', 20911)
-    nipclient = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    nipclient.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  
-    nipclient.bind(nipep)
-    find_new_ip(runner, nipclient)
     lep = ('0.0.0.0', 20910)
     rep = ('10.10.100.254', 20910)
 
@@ -91,11 +85,23 @@ def main():
     client.bind(lep)
 
     data_received(runner, client, rep)
-    data_scan(runner, client, rep)
+
+    ssid = "IMPLabo"
+    data_scan(runner, client, rep, ssid)
 
     key = "j2LK98!we".encode()
     data_join(runner, client, rep, key)
 
-    #data_custom(runner, client, rep)
+    nipep = ('0.0.0.0', 20911)
+    nipclient = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    nipclient.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  
+    nipclient.bind(nipep)
+
+    nip = find_new_ip(runner, nipclient)
+
+    niprep = (nip, 20911) # Might be 20910
+
+    #TODO: Send custom blink command
+    data_custom(runner, client, niprep)
 
 main()

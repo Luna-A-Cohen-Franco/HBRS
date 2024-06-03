@@ -6,6 +6,7 @@ import sys
 
 from scapy.all import *
 
+from lib.classes.addresses.ipv4 import IPv4Addr
 from lib.classes.hacommand.ping import Ping
 from lib.classes.join.join_req import JoinReq
 from lib.consts.other import Other
@@ -21,6 +22,7 @@ class Runner:
         self.ssid = ssid
         self.security_type = security_type
         self.encryption_type = encryption_type
+        self.ip = IPv4Addr([0,0,0,0])
 
     def send_ping(self):
         comm = HACommand()
@@ -144,7 +146,7 @@ class Runner:
             except Exception as e:
                 return None, str(e)
     
-    def data_received_scan(self, socket: socket.socket) -> Tuple[None, str]:
+    def data_received_scan(self, socket: socket.socket, ssid: str) -> Tuple[None, str]:
         buffer = bytearray(1024)
         
         while True:
@@ -167,7 +169,7 @@ class Runner:
                 for wifi in res.get_join().get_scan_res().get_wifis():
                     print("WIFI: ")
                     wifi.display()
-                    if wifi.get_ssid_as_str().startswith("IPML"):
+                    if wifi.get_ssid_as_str() == ssid:
                         self.ssid = wifi.ssid
                         self.security_type = wifi.get_security_type()
                         self.encryption_type = wifi.get_encryption_type()
@@ -186,15 +188,19 @@ class Runner:
             print("Received message:", data, "from", addr)
             sender_ip = addr[0]
                     
-            sender_mac = get_mac_address(sender_ip)
-            print("MAC address of sender:", sender_mac)
+            sender_mac = self.get_mac_address(sender_ip)
 
-def get_mac_address(ip):
-    ans, _ = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=ip), timeout=2, verbose=False)
+            #TODO: Fix this comparison
+            if sender_mac == self.mac.get_bytes():
+                print("Found IP")
+                self.ip = sender_ip
     
-    # Extract MAC address from response
-    for _, rcv in ans:
-        return rcv[Ether].src
+    def get_mac_address(self, ip):
+        ans, _ = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=ip), timeout=2, verbose=False) # type: ignore
+        
+        # Extract MAC address from response
+        for _, rcv in ans:
+            return rcv[Ether].src # type: ignore
 
     def display(self):
         print(''.join(chr(byte) for byte in self.ssid))
