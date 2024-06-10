@@ -12,6 +12,7 @@ class ScanResItem:
 
     def display(self):
         print(self.get_ssid_as_str())
+        print(self.ssid)
         print(self.security_type)
         print(self.encryption_type)
         print(self.rssi)

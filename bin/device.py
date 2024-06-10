@@ -4,7 +4,7 @@ import random
 import os
 import sys
 
-from scapy.all import *
+#from scapy.all import *
 
 from lib.classes.addresses.ipv4 import IPv4Addr
 from lib.classes.hacommand.ping import Ping
@@ -16,91 +16,17 @@ from lib.classes.addresses.mac import MacAddress
 from lib.classes.hacommand.hacommand import HACommand
 from lib.classes.join.join import Join
 
-class Runner:
-    def __init__(self, mac: str, ssid: str, security_type: int, encryption_type: int):
+class Device:
+    def __init__(self, mac: str, ssid: str, security_type: int, encryption_type: int, deviceSckt: socket.socket, nipDeviceSckt):
         self.mac = mac
         self.ssid = ssid
         self.security_type = security_type
         self.encryption_type = encryption_type
         self.ip = IPv4Addr([0,0,0,0])
-
-    def send_ping(self):
-        comm = HACommand()
-        comm.get_header().set_protocol_version(0)
-        comm.get_header().set_source_mac(MacAddress([0, 0, 0, 0, 0, 0]))
-        comm.get_header().set_destination_mac(MacAddress([255, 255, 255, 255, 255, 255]))
-
-        rng = random.SystemRandom()
-        next_sqnc_num = rng.randint(0, 255)
-        comm.get_header().set_sequence_number(next_sqnc_num)
-
-        comm.get_header().set_source_endpoint(0)
-        comm.get_header().set_destination_endpoint(0)
-        comm.get_header().set_id(224)
-
-        comm.ping = Ping();  
-
-        return comm
-        
-    def send_join_scan(self):
-        comm = HACommand()
-        comm.get_header().set_protocol_version(0)
-        comm.get_header().set_source_mac(MacAddress([0, 0, 0, 0, 0, 0]))
-        comm.get_header().set_destination_mac(self.mac)
-
-        rng = random.SystemRandom()
-        next_sqnc_num = rng.randint(0, 255)
-        comm.get_header().set_sequence_number(next_sqnc_num)
-
-        comm.get_header().set_source_endpoint(0)
-        comm.get_header().set_destination_endpoint(0)
-        comm.get_header().set_id(161)
-
-        comm.set_join(Join())
-        comm.join.sub_command = 5
-        return comm
-
-    def send_join_request(self, ssid: str, security_type: int, encryption_type: int, key: str):
-        comm = HACommand()
-
-        comm.get_header().set_protocol_version(0)
-        comm.get_header().set_source_mac(MacAddress([0, 0, 0, 0, 0, 0]))
-        comm.get_header().set_destination_mac(self.mac)
-
-        rng = random.SystemRandom()
-        next_sqnc_num = rng.randint(0, 255)
-        comm.get_header().set_sequence_number(next_sqnc_num)
-
-        comm.get_header().set_source_endpoint(0)
-        comm.get_header().set_destination_endpoint(0)
-        comm.get_header().set_id(161)
-
-        join = Join()
-
-        join.set_join_req(JoinReq.new(ssid, security_type, encryption_type, key))
-
-        join.set_sub_command(3)
-
-        comm.set_join(join)
-
-        return comm
-
-    def send_custom_comm(self, dest_endpoint: int):
-        comm = HACommand()
-
-        comm.get_header().set_protocol_version(0)
-        comm.get_header().set_source_mac(MacAddress([0, 0, 0, 0, 0, 0]))
-        comm.get_header().set_destination_mac(MacAddress(self.mac))
-
-        rng = random.SystemRandom()
-        next_sqnc_num = rng.randint(0, 255)
-        comm.get_header().set_sequence_number(next_sqnc_num)
-
-        comm.get_header().set_source_endpoint(0)
-        comm.get_header().set_destination_endpoint(dest_endpoint)
-        comm.get_header().set_id(2)
-              
-        return comm
+        self.deviceSckt = deviceSckt
+        self.nipDeviceSckt = nipDeviceSckt
+        self.connected = False
+        self.got_mac = False
 
     def process_rcvd_msg(self, data: list):
         res = HACommand()
@@ -109,12 +35,13 @@ class Runner:
 
         return res
 
-    def data_received(self, socket: socket.socket) -> Tuple[MacAddress, str]:
+    def data_received(self) -> Tuple[MacAddress, str]:
         buf = bytearray(1024) 
         while True:
             try:
-                size, _ = socket.recvfrom_into(buf)
+                size, _ = self.deviceSckt.recvfrom_into(buf)
                 print("Recieved ARP data")
+                self.got_mac = True
                 received_bytes = buf[:size]
                 res = self.process_rcvd_msg(received_bytes)
 
@@ -127,11 +54,11 @@ class Runner:
                 return None, str(e)
         
 
-    def data_received_join(self, socket: socket.socket) -> Tuple[None, str]:
+    def data_received_join(self) -> Tuple[None, str]:
         buffer = bytearray(1024)
         while True:
             try:
-                size, _ = socket.recvfrom_into(buffer)
+                size, _ = self.deviceSckt.recvfrom_into(buffer)
                 print("Received join bytes")
                 received_bytes = buffer[:size]
                 print(received_bytes)
@@ -146,15 +73,15 @@ class Runner:
             except Exception as e:
                 return None, str(e)
     
-    def data_received_scan(self, socket: socket.socket, ssid: str) -> Tuple[None, str]:
+    def data_received_scan(self, ssid: str) -> Tuple[None, str]:
         buffer = bytearray(1024)
         
         while True:
             try:
-                size, _ = socket.recvfrom_into(buffer)
+                size, _ = self.deviceSckt.recvfrom_into(buffer)
                 received_bytes = buffer[:size]
                 print("Recieved scan data")
-                #print(received_bytes)
+                print(received_bytes)
 
                 res = HACommand()
                 res.set_bytes(received_bytes, 6)
@@ -169,7 +96,8 @@ class Runner:
                 for wifi in res.get_join().get_scan_res().get_wifis():
                     print("WIFI: ")
                     wifi.display()
-                    if wifi.get_ssid_as_str() == ssid:
+
+                    if wifi.get_ssid_as_str().startswith(ssid):
                         self.ssid = wifi.ssid
                         self.security_type = wifi.get_security_type()
                         self.encryption_type = wifi.get_encryption_type()
@@ -177,13 +105,16 @@ class Runner:
                         print("Selected WIFI:")
                         self.display()
                         
+                        self.connected = True
+
                         return None, None
+                    print()
             except Exception as e:
                 return None, str(e)
     
-    def find_new_ip(self, socket: socket.socket):
+    def find_new_ip(self):
         while True:
-            data, addr = socket.recvfrom(1024)
+            data, addr = self.nipDeviceSckt.recvfrom(1024)
             print("Recieved new IP data")
             print("Received message:", data, "from", addr)
             sender_ip = addr[0]
@@ -204,5 +135,6 @@ class Runner:
 
     def display(self):
         print(''.join(chr(byte) for byte in self.ssid))
+        print(self.ssid)
         print(self.security_type)
         print(self.encryption_type)
