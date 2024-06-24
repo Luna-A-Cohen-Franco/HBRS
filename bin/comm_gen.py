@@ -76,7 +76,7 @@ class CommandGenerator:
         return comm
 
     @staticmethod
-    def send_custom_comm(mac: MacAddress, dest_endpoint: int):
+    def send_custom_comm(cmdID: int, mac: MacAddress, dest_endpoint: int):
         comm = HACommand()
 
         comm.get_header().set_protocol_version(0)
@@ -89,6 +89,6 @@ class CommandGenerator:
 
         comm.get_header().set_source_endpoint(0)
         comm.get_header().set_destination_endpoint(dest_endpoint)
-        comm.get_header().set_id(2)
+        comm.get_header().set_id(cmdID)
               
         return comm

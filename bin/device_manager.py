@@ -12,14 +12,16 @@ from bin.comm_gen import CommandGenerator
 from lib.classes.addresses.mac import MacAddress
 
 #Consts
-NIPREP_PORT = 20911
+NIPREP_PORT = 20911 # Might be 20910
 LEP = ('0.0.0.0', 20910)
 REP = ('10.10.100.254', 20910)
 NIPEP = ('0.0.0.0', 20911)
 
 class DeviceManager:
-    def __init__(self, name, ssid, key):
+    def __init__(self, name, ssid, key, delay_factor):
         self.name = name
+
+        self.delay_factor = delay_factor
 
         self.ssid = ssid
         self.key = key.encode()
@@ -28,8 +30,6 @@ class DeviceManager:
         
         self.deviceSckt = DeviceManager.gen_device_sckt()
         self.nipDeviceSckt = DeviceManager.gen_nip_device_sck()
-
-        self.niprep = ""
 
         self.device.deviceSckt = self.deviceSckt
         self.device.nipDeviceSckt = self.nipDeviceSckt
@@ -75,7 +75,7 @@ class DeviceManager:
         while self.device.got_mac == False:
             self.deviceSckt.sendto(ping, REP)
 
-        time.sleep(5)
+        time.sleep(5 * self.delay_factor)
 
     def data_scan(self):
         command_scan = CommandGenerator.send_join_scan(self.device.mac)
@@ -90,9 +90,9 @@ class DeviceManager:
         self.deviceSckt.sendto(data_scan, REP)
 
         while self.device.connected == False:
-            time.sleep(15)
+            time.sleep(15 * self.delay_factor)
             
-        time.sleep(15)
+        time.sleep(15 * self.delay_factor)
 
     def data_join(self):
         command_join = CommandGenerator.send_join_request(self.device.mac, self.device.ssid, self.device.security_type, self.device.encryption_type, self.key)
@@ -109,22 +109,18 @@ class DeviceManager:
 
         self.deviceSckt.sendto(data_join, REP)
 
-        time.sleep(2)
+        time.sleep(2 * self.delay_factor)
 
-    def data_custom(self):
+    def data_custom(self, cmdID: int):
         custom_comm = CommandGenerator.send_custom_comm(self.device.mac, 1)
 
         data_custom = custom_comm.get_bytes()
 
         print("Sending custom signal")
 
-        self.deviceSckt.sendto(data_custom, REP)
+        self.deviceSckt.sendto(cmdID, data_custom, self.device.get_niprep())
 
-        time.sleep(2)
-
-    def data_find_new_ip(self):
-        self.device.find_new_ip()
-
+        time.sleep(2 * self.delay_factor)
 
     def make_connection(self):
         self.data_received()
@@ -133,15 +129,18 @@ class DeviceManager:
 
         self.data_join()
 
-        """nip = self.data_find_new_ip(self.device)
+        self.name = self.device.mac + " - " + self.name
 
-        self.niprep = (nip, NIPREP_PORT) # Might be 20910
+    def set_name(self, name: str):
+        self.name = name
 
-        self.name = self.device.mac + " - " + self.name"""
-
+# Example
 def main():
-    devMnger = DeviceManager(name = "AHH", ssid = "IPMLabo", key = "j2LK98!we")
+    # name => Nombre para reconocer al dispositivo
+    # SSID => Nombre wifi
+    # Key => Contraseña wifi
+    devMnger = DeviceManager(name = "Tomacorriente Alfa", ssid = "IPMLabo", key = "j2LK98!we", delay_factor = 1.1)
 
     devMnger.make_connection()
 
-main()
+    devMnger.data_custom(2) 

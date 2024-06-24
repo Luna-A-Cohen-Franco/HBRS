@@ -4,7 +4,7 @@ import random
 import os
 import sys
 
-#from scapy.all import *
+from scapy.all import *
 
 from lib.classes.addresses.ipv4 import IPv4Addr
 from lib.classes.hacommand.ping import Ping
@@ -12,6 +12,7 @@ from lib.classes.join.join_req import JoinReq
 from lib.consts.other import Other
 sys.path.append(os.path.dirname(__file__) + "/..")
 
+from bin.device_manager import NIPREP_PORT
 from lib.classes.addresses.mac import MacAddress
 from lib.classes.hacommand.hacommand import HACommand
 from lib.classes.join.join import Join
@@ -22,7 +23,7 @@ class Device:
         self.ssid = ssid
         self.security_type = security_type
         self.encryption_type = encryption_type
-        self.ip = IPv4Addr([0,0,0,0])
+        self.ip = "0.0.0.0"
         self.deviceSckt = deviceSckt
         self.nipDeviceSckt = nipDeviceSckt
         self.connected = False
@@ -119,19 +120,25 @@ class Device:
             print("Received message:", data, "from", addr)
             sender_ip = addr[0]
                     
-            sender_mac = self.get_mac_address(sender_ip)
+            sender_mac = self.get_mac_address_from_ip(sender_ip)
 
-            #TODO: Fix this comparison
+            #TODO: Make this a valid comparison
             if sender_mac == self.mac.get_bytes():
                 print("Found IP")
-                self.ip = sender_ip
+                self.ip = sender_ip # TODO: Check that this is giving a string, not sure if its a string, an int or an array of bytes
+                return
     
-    def get_mac_address(self, ip):
+    def get_mac_address_from_ip(self, ip):
         ans, _ = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=ip), timeout=2, verbose=False) # type: ignore
         
         # Extract MAC address from response
         for _, rcv in ans:
             return rcv[Ether].src # type: ignore
+
+    def get_niprep(self)  -> Tuple[str, int]:
+        self.find_new_ip()
+
+        return (self.ip, NIPREP_PORT)
 
     def display(self):
         print(''.join(chr(byte) for byte in self.ssid))
