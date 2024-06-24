@@ -12,7 +12,6 @@ from bin.comm_gen import CommandGenerator
 from lib.classes.addresses.mac import MacAddress
 
 #Consts
-NIPREP_PORT = 20911 # Might be 20910
 LEP = ('0.0.0.0', 20910)
 REP = ('10.10.100.254', 20910)
 NIPEP = ('0.0.0.0', 20911)
@@ -39,6 +38,7 @@ class DeviceManager:
         deviceSckt = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         deviceSckt.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  
         deviceSckt.bind(LEP)
+        deviceSckt.settimeout(5)
 
         return deviceSckt
 
@@ -47,6 +47,7 @@ class DeviceManager:
         nipDeviceSckt = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         nipDeviceSckt.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  
         nipDeviceSckt.bind(NIPEP)
+        nipDeviceSckt.settimeout(5)
 
         return nipDeviceSckt
 
@@ -65,17 +66,23 @@ class DeviceManager:
         command = CommandGenerator.send_ping()
         ping = command.get_bytes()
 
+        
         def thread_func():
             print("Receiving")
+            
+            time.sleep(5 * self.delay_factor)
+
             (mac, _) = self.device.data_received()
             self.device.mac = mac
 
         Thread(target=thread_func).start()
 
-        while self.device.got_mac == False:
-            self.deviceSckt.sendto(ping, REP)
-
-        time.sleep(5 * self.delay_factor)
+        self.deviceSckt.sendto(ping, REP)
+        
+        #while self.device.got_mac == False:
+        #    self.deviceSckt.sendto(ping, REP)
+        
+        time.sleep(10 * self.delay_factor)
 
     def data_scan(self):
         command_scan = CommandGenerator.send_join_scan(self.device.mac)
@@ -89,8 +96,8 @@ class DeviceManager:
 
         self.deviceSckt.sendto(data_scan, REP)
 
-        while self.device.connected == False:
-            time.sleep(15 * self.delay_factor)
+        #while self.device.connected == False:
+        #    time.sleep(15 * self.delay_factor)
             
         time.sleep(15 * self.delay_factor)
 
@@ -102,23 +109,28 @@ class DeviceManager:
         print(list(data_join))
         def thread_func():
             print("Joining")
-            time.sleep(5)
+
+            time.sleep(10 * self.delay_factor)
+
             self.device.data_received_join()
 
         Thread(target=thread_func).start()
 
+        time.sleep(5 * self.delay_factor)
+
         self.deviceSckt.sendto(data_join, REP)
+
 
         time.sleep(2 * self.delay_factor)
 
     def data_custom(self, cmdID: int):
-        custom_comm = CommandGenerator.send_custom_comm(self.device.mac, 1)
+        custom_comm = CommandGenerator.send_custom_comm(cmdID, self.device.mac, 1)
 
         data_custom = custom_comm.get_bytes()
 
         print("Sending custom signal")
 
-        self.deviceSckt.sendto(cmdID, data_custom, self.device.get_niprep())
+        self.deviceSckt.sendto(data_custom, self.device.get_niprep())
 
         time.sleep(2 * self.delay_factor)
 
@@ -129,7 +141,7 @@ class DeviceManager:
 
         self.data_join()
 
-        self.name = self.device.mac + " - " + self.name
+        self.name = self.device.mac.to_string() + " - " + self.name
 
     def set_name(self, name: str):
         self.name = name
@@ -143,4 +155,6 @@ def main():
 
     devMnger.make_connection()
 
-    devMnger.data_custom(2) 
+    #devMnger.data_custom(2) 
+
+main()

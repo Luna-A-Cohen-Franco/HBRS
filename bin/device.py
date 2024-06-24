@@ -4,7 +4,7 @@ import random
 import os
 import sys
 
-from scapy.all import *
+from scapy.all import * # type: ignore
 
 from lib.classes.addresses.ipv4 import IPv4Addr
 from lib.classes.hacommand.ping import Ping
@@ -12,10 +12,11 @@ from lib.classes.join.join_req import JoinReq
 from lib.consts.other import Other
 sys.path.append(os.path.dirname(__file__) + "/..")
 
-from bin.device_manager import NIPREP_PORT
 from lib.classes.addresses.mac import MacAddress
 from lib.classes.hacommand.hacommand import HACommand
 from lib.classes.join.join import Join
+
+NIPREP_PORT = 20911 # Might be 20910
 
 class Device:
     def __init__(self, mac: str, ssid: str, security_type: int, encryption_type: int, deviceSckt: socket.socket, nipDeviceSckt):
@@ -64,7 +65,6 @@ class Device:
                 received_bytes = buffer[:size]
                 print(received_bytes)
 
-                
                 if len(received_bytes) == 17 and received_bytes[16] == 128:
                     print("OK")
                     return None, None
@@ -92,6 +92,7 @@ class Device:
                     or res.get_join().get_scan_res() is None
                     or not res.get_join().get_scan_res().get_wifis()
                 ):
+                    print("Data wasn't a scan response or no wifis were found")
                     return None, "Data wasn't a scan response or no wifis were found"
                 
                 for wifi in res.get_join().get_scan_res().get_wifis():
@@ -107,8 +108,6 @@ class Device:
                         self.display()
                         
                         self.connected = True
-
-                        return None, None
                     print()
             except Exception as e:
                 return None, str(e)

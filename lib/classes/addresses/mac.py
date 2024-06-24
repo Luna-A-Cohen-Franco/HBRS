@@ -25,10 +25,14 @@ class MacAddress:
         return MacAddress(bytes)
 
     def display(self):
-        for byte in self.bytes:
-            print(f"{byte:02X}:", end="")
-        print()
+        print(self.to_string())
 
+    def to_string(self):
+        result = []
+        for byte in self.bytes:
+            result.append(f"{byte:02X}:")
+        return ''.join(result)[:-1]
+            
     @staticmethod
     def new_empty():
         return MacAddress([])
